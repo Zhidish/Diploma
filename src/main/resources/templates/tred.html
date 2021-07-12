@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>tred</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link th:href="@{/style/style.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/js/app.js}"  defer></script>
+</head>
+<body class="bodyss_puk">
+<header>
+    <div class ="reply_to_post">
+        <form method="post" action="/info/{tred_id}"  th:action="@{/info/{tred_id}(tred_id=${item})}">
+            <input type="text" name="post_value">
+            <input type ="submit">
+
+
+        </form>
+
+    </div>
+
+    <div class="tred_info" th:with="value_tred_info=${posts.get(0).tred.info}, tred_name=${posts.get(0).tred.name}">
+        <p>
+          <span th:text="${value_tred_info}">
+          </span>
+        </p>
+
+        <p>
+          <span th:text="${tred_name}">
+          </span>
+        </p>
+
+    </div>
+
+</header>
+
+
+<div class="tred_container">
+
+    <table class="post reply de-reply" th:each="post, iter :${posts}">
+        <tr>
+            <td>
+                <time th:text="${post.getLocalDateTIme()}"></time>
+            </td>
+            <td>
+                ⋮⋮⋮
+            </td>
+            <td ><a href="#" th:text="${post.getPostId()}" class="post-ip"></a></td>
+
+
+
+
+        </tr>
+
+
+        <tr>
+
+            <td>
+                <div class="body" th:text="${post.getMessage()}">
+
+                </div>
+            </td>
+
+            <td><small th:text="${post.getLocalDateTIme().toString()}"></small></td>
+        </tr>
+
+        <tr>
+            <td id="td_answers">
+                <ul th:each="answer:${answers}">
+                    <li th:text="${answer.getId()}" th:if="${post.getPostId()==answer.getAnswer_to()}">
+                        <a></a>
+                    </li>
+                </ul>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <div id="quickReply"
+                     style="top: 32.0862%; left: 54.7497%; display: none;">
+                    <div id="qrHeader" class="drag postblock">Reply to Thread No.
+                        <span id="qrTid"></span>
+
+                    </div>
+                    <form name="qrPost" action="" method="post"
+                          enctype="multipart/form-data"><input type="hidden" value="4194304" name="MAX_FILE_SIZE"><input
+                            type="hidden" value="regist" name="mode"><input id="qrResto" type="hidden" value="108755217"
+                                                                            name="resto">
+                        <div id="qrForm">
+                            <div>
+                                <input name="name" type="text" tabindex="0" placeholder="Name">
+                            </div>
+                            <div>
+                                <input name="email" type="text" tabindex="0" id="qrEmail" placeholder="Options">
+                            </div>
+
+                            <div>
+                            <textarea name="com" cols="48" rows="4" wrap="soft" tabindex="0" placeholder="Comment"
+                                      style="margin: 0px 0px 1px; width: 330px; height: 77px;">
+
+                            </textarea>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+
+</body>
+
+</html>
+
+
+
+

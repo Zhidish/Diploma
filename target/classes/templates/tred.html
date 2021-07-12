@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>tred</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link th:href="@{/style/style.css}" rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/js/app.js}"  defer></script>
+</head>
+<body class="bodyss_puk">
+<header>
+    <div class ="reply_to_post">
+        <form method="post" action="/info/{tred_id}"  th:action="@{/info/{tred_id}(tred_id=${item})}">
+            <input type="text" name="post_value">
+            <input type ="submit">
+
+
+        </form>
+
+    </div>
+
+    <div class="tred_info" th:with="value_tred_info=${posts.get(0).tred.info}, tred_name=${posts.get(0).tred.name}">
+        <p>
+          <span th:text="${value_tred_info}">
+          </span>
+        </p>
+
+        <p>
+          <span th:text="${tred_name}">
+          </span>
+        </p>
+
+    </div>
+
+</header>
+
+
+<div class="tred_container">
+
+    <table class="post reply de-reply" th:each="post, iter :${posts}">
+        <tr>
+            <td>
+                <time th:text="${post.getLocalDateTIme()}"></time>
+            </td>
+            <td>
+                ⋮⋮⋮
+            </td>
+            <td ><a href="#" th:text="${post.getPostId()}" class="post-ip"></a></td>
+
+
+
+
+        </tr>
+
+
+        <tr>
+
+            <td>
+                <div class="body" th:text="${post.getMessage()}">
+
+                </div>
+            </td>
+
+            <td><small th:text="${post.getLocalDateTIme().toString()}"></small></td>
+        </tr>
+
+        <tr>
+            <td id="td_answers">
+                <ul th:each="answer:${answers}">
+                    <li th:text="${answer.getId()}" th:if="${post.getPostId()==answer.getAnswer_to()}">
+                        <a></a>
+                    </li>
+                </ul>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <div id="quickReply"
+                     style="top: 32.0862%; left: 54.7497%; display: none;">
+                    <div id="qrHeader" class="drag postblock">Reply to Thread No.
+                        <span id="qrTid"></span>
+
+                    </div>
+                    <form name="qrPost" action="" method="post"
+                          enctype="multipart/form-data"><input type="hidden" value="4194304" name="MAX_FILE_SIZE"><input
+                            type="hidden" value="regist" name="mode"><input id="qrResto" type="hidden" value="108755217"
+                                                                            name="resto">
+                        <div id="qrForm">
+                            <div>
+                                <input name="name" type="text" tabindex="0" placeholder="Name">
+                            </div>
+                            <div>
+                                <input name="email" type="text" tabindex="0" id="qrEmail" placeholder="Options">
+                            </div>
+
+                            <div>
+                            <textarea name="com" cols="48" rows="4" wrap="soft" tabindex="0" placeholder="Comment"
+                                      style="margin: 0px 0px 1px; width: 330px; height: 77px;">
+
+                            </textarea>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+
+</body>
+
+</html>
+
+<!--
+
+<time datetime="17-05-21 о 01:08:29">17-05-21 о 01:08:29</time>
+
+</label>
+⋮⋮⋮
+
+&nbsp;
+<a class="post_no" id="post_no_5239" onclick="highlightReply(5239)" href="https://kropyva.ch/l/res/5237.html#5239">No.</a>
+<a class="post_no" onclick="citeReply(5239)" href="https://kropyva.ch/l/res/5237.html#5239">5239</a><span class="de-post-btns"><svg class="de-btn-hide"><use class="de-btn-hide-use" xlink:href="#de-symbol-post-hide"></use><use class="de-btn-unhide-use" xlink:href="#de-symbol-post-unhide"></use></svg><svg class="de-btn-reply"><use xlink:href="#de-symbol-post-reply"></use></svg><span class="de-post-counter">2</span></span>
+
+
+
+
+</p>
+
+
+<div class="files">
+
+
+</div>
+
+
+
+<div class="body">
+    Якщо не будеш ніц робить<br>то здохнеш нахуй без їди<br>тому пизди чи не пизди<br>а шось роби.
+</div>
+</div>
+<br>
+
+
+<div class="post reply de-reply" id="reply_5243">
+    <p class="intro">
+        <a id="5243" class="post_anchor"></a>
+        <input type="checkbox" class="delete" name="delete_5243" id="delete_5243">
+        <label for="delete_5243">
+
+            <span class="name">None</span>
+
+
+
+    <table>
+
+        <tbody><tr>
+            <th>
+                Name
+            </th>
+            <td>
+                <input type="text" name="name" maxlength="35" id="id_name" placeholder="Имя">
+            </td>
+        </tr>
+
+        <tr style="display: none;">
+            <th>Email</th>
+            <td>
+
+                <input type="text" name="email" maxlength="30" id="id_email" placeholder="Почта">
+
+            </td>
+        </tr>
+
+        <tr>
+            <th>
+                Subject
+            </th>
+            <td>
+                <input type="text" name="subject" maxlength="100" id="id_subject" placeholder="Тема">
+            </td>
+        </tr>
+
+        <tr>
+            <th>Comment</th>
+            <td>
+                <textarea name="body" cols="40" rows="10" id="id_body" class="de-textarea" title="Ctrl+V - вставить картинку из буфера" style="width: 300px !important; height: 115px !important;"></textarea><span id="de-txt-panel" style="float: none;"><div id="de-btn-bold" de-title="Жирный" de-tag="b"><svg><use xlink:href="#de-symbol-markup-bold"></use></svg></div><div id="de-btn-italic" de-title="Курсив" de-tag="i"><svg><use xlink:href="#de-symbol-markup-italic"></use></svg></div><div id="de-btn-under" de-title="Подчеркнутый" de-tag="u"><svg><use xlink:href="#de-symbol-markup-under"></use></svg></div><div id="de-btn-strike" de-title="Зачеркнутый" de-tag="s"><svg><use xlink:href="#de-symbol-markup-strike"></use></svg></div><div id="de-btn-spoil" de-title="Спойлер" de-tag="spoiler"><svg><use xlink:href="#de-symbol-markup-spoil"></use></svg></div><div id="de-btn-code" de-title="Код" de-tag="code"><svg><use xlink:href="#de-symbol-markup-code"></use></svg></div><div id="de-btn-quote" de-title="Цитировать выделенное" de-tag="q"><svg><use xlink:href="#de-symbol-markup-quote"></use></svg></div></span>
+
+            </td>
+        </tr>
+        <tr class="de-file-txt-area"><td class="postblock"></td><td><span class="de-file-txt-wrap" style="display: none;">
+			<input type="text" name="de-file-txt" class="de-file-txt-input de-file-txt-noedit" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов" placeholder="Бросьте сюда файл(ы) или ссылку">
+			<input type="button" class="de-file-txt-add" value="+" title="Добавить" style="display: none;"></span><span class="de-file-txt-wrap" style="display: none;">
+			<input type="text" name="de-file-txt" class="de-file-txt-input de-file-txt-noedit" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов" placeholder="Бросьте сюда файл(ы) или ссылку">
+			<input type="button" class="de-file-txt-add" value="+" title="Добавить" style="display: none;"></span><span class="de-file-txt-wrap" style="display: none;">
+			<input type="text" name="de-file-txt" class="de-file-txt-input de-file-txt-noedit" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов" placeholder="Бросьте сюда файл(ы) или ссылку">
+			<input type="button" class="de-file-txt-add" value="+" title="Добавить" style="display: none;"></span><span class="de-file-txt-wrap" style="display: none;">
+			<input type="text" name="de-file-txt" class="de-file-txt-input de-file-txt-noedit" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов" placeholder="Бросьте сюда файл(ы) или ссылку">
+			<input type="button" class="de-file-txt-add" value="+" title="Добавить" style="display: none;"></span><span class="de-file-txt-wrap" style="display: none;">
+			<input type="text" name="de-file-txt" class="de-file-txt-input de-file-txt-noedit" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов" placeholder="Бросьте сюда файл(ы) или ссылку">
+			<input type="button" class="de-file-txt-add" value="+" title="Добавить" style="display: none;"></span></td></tr><tr id="upload" style="display: none;">
+            <th>Файл</th>
+            <td><div><input type="file" name="file" class="de-file-input" multiple="true" style="display: none;"><a href="#" class="add_image">+</a></div><div style="display: none;"><input type="file" name="file2" class="de-file-input" multiple="true" style="display: none;"><a href="#" class="add_image">+</a></div><div style="display: none;"><input type="file" name="file3" class="de-file-input" multiple="true" style="display: none;"><a href="#" class="add_image">+</a></div><div style="display: none;"><input type="file" name="file4" class="de-file-input" multiple="true" style="display: none;"><a href="#" class="add_image">+</a></div><div style="display: none;"><input type="file" name="file5" class="de-file-input" multiple="true" style="display: none;"><a href="#" class="add_image">+</a></div></td>
+        </tr><div id="de-file-area"><div class="de-file de-file-off"><div class="de-file-img"><div class="de-file-img" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов"></div></div><div class="de-file-utils">
+			<span class="de-file-btn-rar" title="Встроить ogg/rar/zip/7z в картинку" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-rar"></use></svg></span>
+            <input class="de-file-spoil" type="checkbox" title="Спойлер" style="display: none;">
+            <span class="de-file-btn-txt" title="Ввести ссылку на файл вручную">
+				<svg><use xlink:href="#de-symbol-file-txt"></use></svg></span>
+            <span class="de-file-btn-ren" title="Переименовать файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-ren"></use></svg></span>
+            <span class="de-file-btn-del" title="Удалить файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-del"></use></svg></span>
+        </div></div><div class="de-file de-file-off" style="display: none;"><div class="de-file-img"><div class="de-file-img" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов"></div></div><div class="de-file-utils">
+			<span class="de-file-btn-rar" title="Встроить ogg/rar/zip/7z в картинку" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-rar"></use></svg></span>
+            <input class="de-file-spoil" type="checkbox" title="Спойлер" style="display: none;">
+            <span class="de-file-btn-txt" title="Ввести ссылку на файл вручную">
+				<svg><use xlink:href="#de-symbol-file-txt"></use></svg></span>
+            <span class="de-file-btn-ren" title="Переименовать файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-ren"></use></svg></span>
+            <span class="de-file-btn-del" title="Удалить файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-del"></use></svg></span>
+        </div></div><div class="de-file de-file-off" style="display: none;"><div class="de-file-img"><div class="de-file-img" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов"></div></div><div class="de-file-utils">
+			<span class="de-file-btn-rar" title="Встроить ogg/rar/zip/7z в картинку" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-rar"></use></svg></span>
+            <input class="de-file-spoil" type="checkbox" title="Спойлер" style="display: none;">
+            <span class="de-file-btn-txt" title="Ввести ссылку на файл вручную">
+				<svg><use xlink:href="#de-symbol-file-txt"></use></svg></span>
+            <span class="de-file-btn-ren" title="Переименовать файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-ren"></use></svg></span>
+            <span class="de-file-btn-del" title="Удалить файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-del"></use></svg></span>
+        </div></div><div class="de-file de-file-off" style="display: none;"><div class="de-file-img"><div class="de-file-img" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов"></div></div><div class="de-file-utils">
+			<span class="de-file-btn-rar" title="Встроить ogg/rar/zip/7z в картинку" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-rar"></use></svg></span>
+            <input class="de-file-spoil" type="checkbox" title="Спойлер" style="display: none;">
+            <span class="de-file-btn-txt" title="Ввести ссылку на файл вручную">
+				<svg><use xlink:href="#de-symbol-file-txt"></use></svg></span>
+            <span class="de-file-btn-ren" title="Переименовать файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-ren"></use></svg></span>
+            <span class="de-file-btn-del" title="Удалить файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-del"></use></svg></span>
+        </div></div><div class="de-file de-file-off" style="display: none;"><div class="de-file-img"><div class="de-file-img" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов"></div></div><div class="de-file-utils">
+			<span class="de-file-btn-rar" title="Встроить ogg/rar/zip/7z в картинку" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-rar"></use></svg></span>
+            <input class="de-file-spoil" type="checkbox" title="Спойлер" style="display: none;">
+            <span class="de-file-btn-txt" title="Ввести ссылку на файл вручную">
+				<svg><use xlink:href="#de-symbol-file-txt"></use></svg></span>
+            <span class="de-file-btn-ren" title="Переименовать файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-ren"></use></svg></span>
+            <span class="de-file-btn-del" title="Удалить файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-del"></use></svg></span>
+        </div></div></div>
+
+        <tr style="display: none;">
+            <th>
+                Пароль
+            </th>
+            <td>
+                <input type="text" name="password" maxlength="20" id="id_password">
+                <span class="unimportant">(For file deletion.)</span>
+            </td>
+        </tr>
+
+        <tr>
+            <th>
+            </th>
+            <td>
+                <input id="rules" name="rules" type="checkbox" checked="">
+                <label for="rules">By posting you agree with our <a href="/about/rules/">the rules</a></label>
+                <input accesskey="s" style="margin-left:2px;" type="submit" name="post" value="Надіслати"><span id="de-sagebtn" title="Без сажи" style="opacity: 0.3;"><svg class="de-btn-sage"><use xlink:href="#de-symbol-post-sage"></use></svg></span>
+
+            </td>
+        </tr>
+
+        </tbody></table>
+
+
+-->
+
+

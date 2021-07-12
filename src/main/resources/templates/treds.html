@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="shortcut icon" href="https://fcahn.ch/static/favicon.ico">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <link th:href="@{/style/futaba.css}" rel="stylesheet"/>
+    <link th:href="@{/style/style1.css}" rel="stylesheet"/>
+    <link th:href="@{/js/app.js}" rel="script"/>
+
+
+    <script type="text/javascript">
+        var
+            active_page = "board"
+            , board_name = "l";
+    </script>
+    <title>Fchan</title>
+
+    <style type="text/css" id="de-css">
+        /* Main panel */
+        #de-panel { position: fixed; right: 0; bottom: 0; z-index: 9999; border-radius: 15px 0 0 0; cursor: default; display: flex; min-height: 25px; color: #F5F5F5; }
+        #de-panel-logo { flex: none; margin: auto 3px auto 0; cursor: pointer; }
+        #de-panel-buttons { flex: 0 1 auto; display: flex; flex-flow: row wrap; align-items: center; padding: 0 0 0 2px; margin: 0; border-left: 1px solid #616b86; }
+        .de-panel-button { display: block; flex: none; margin: 0 1px; padding: 0; transition: all .3s ease; }
+        a.de-panel-button, a.de-panel-button:hover { color: inherit !important; }
+        .de-panel-svg, #de-panel-logo, .de-panel-logo-svg, .de-panel-button { width: 25px; height: 25px; }
+        #de-panel-goback { transform: rotate(180deg); will-change: transform; }
+        #de-panel-godown { transform: rotate(90deg); will-change: transform; }
+        #de-panel-goup { transform: rotate(-90deg); will-change: transform; }
+        #de-panel-upd-on { fill: #32ff32; }
+        #de-panel-upd-warn { fill: #fff441; }
+        #de-panel-upd-off { fill: #ff3232; }
+        #de-panel-audio-on > .de-panel-svg > .de-use-audio-off, #de-panel-audio-off > .de-panel-svg > .de-use-audio-on { display: none; }
+        #de-panel-info { display: flex; flex: none; padding: 0 6px; margin-left: 2px; border-left: 1px solid #616b86; font: 18px serif; }
+        #de-panel-info-icount::before, #de-panel-info-acount:not(:empty)::before { content: "/"; }
+        #de-svg-icons, #de-svg-icons > svg { height: 0; width: 0; position: fixed; }
+        .de-svg-fill { stroke: none; fill: currentColor; }
+        .de-svg-stroke { stroke: currentColor; fill: none; }
+        use { fill: inherit; pointer-events: none; }
+
+        /* Panel theme */
+        .de-img-btn, #de-panel, .de-win-head { background-color: #777; }
+        #de-panel-buttons, #de-panel-info { border-color: #ccc; }
+        .de-panel-svg:hover { border: 2px solid #444; border-radius: 5px; box-sizing: border-box; transition: none; }
+        .de-logo { background: linear-gradient(to bottom, #7b849b, #616b86 8%, #3a414f 52%, rgba(0,0,0,0) 52%), linear-gradient(to bottom, rgba(0,0,0,0) 48%, #121212 52%, #1f2740 100%); }
+        .de-panel-svg:hover { border: 2px solid #444; border-radius: 5px; box-sizing: border-box; transition: none; }
+
+        /* Windows */
+        .de-win .de-win-btn-toggle { transform: rotate(180deg); }
+        .de-resizer { position: absolute; }
+        .de-resizer-bottom { height: 6px; bottom: -3px; left: 0; right: 0; cursor: ns-resize; }
+        .de-resizer-left { width: 6px; top: 0px; bottom: 0px; left: -3px; cursor: ew-resize; }
+        .de-resizer-right { width: 6px; top: 0px; bottom: 0px; right: -3px; cursor: ew-resize; }
+        .de-resizer-top { height: 6px; top: -3px; left: 0; right: 0; cursor: ns-resize; }
+        .de-win > .de-win-head { cursor: move; }
+        .de-win-buttons { position: absolute; right: 0; margin: 0 2px 0 0; font-size: 0; cursor: pointer; }
+        .de-win-buttons > svg { transition: background .3s ease, box-shadow .3s ease; }
+        .de-win-buttons > svg:hover { background-color: rgba(255,255,255,.2); box-shadow: 0 0 2px rgba(255,255,255,.4); }
+        .de-win-inpost > .de-win-head > .de-win-buttons > svg:hover { background-color: rgba(64,64,64,.15); box-shadow: 0 0 2px rgba(64,64,64,.3); }
+        #de-win-cfg { width: 355px; }
+        #de-win-cfg, #de-win-fav, #de-win-hid, #de-win-vid { position: fixed; max-height: 92%; overflow-x: hidden; overflow-y: auto; }
+        #de-win-cfg > .de-win-body { float: none; display: block; width: auto; min-width: 0; max-width: 100% !important; padding: 0 !important; margin: 0 !important; border: none; }
+        #de-win-fav > .de-win-body, #de-win-hid > .de-win-body, #de-win-vid > .de-win-body { padding: 6px; border: 1px solid gray; }
+        #de-win-hid { max-width: 60%; }
+        #de-win-vid > .de-win-body { display: flex; flex-direction: column; align-items: center; }
+        #de-win-vid .de-entry { white-space: normal; }
+        .de-win-head { position: relative; padding: 2px; border-radius: 10px 10px 0 0; color: #F5F5F5; font: bold 14px/16px arial; text-align: center; cursor: default; }
+
+        /* Settings window */
+        .de-block { display: block; }
+        #de-btn-spell-add { margin-left: auto; }
+        #de-cfg-bar { display: flex; margin: 0; padding: 0; }
+        .de-cfg-body { min-height: 353px; padding: 9px 7px 7px; margin-top: -1px; font: 13px/15px arial !important; -moz-box-sizing: content-box; box-sizing: content-box; }
+        .de-cfg-body, #de-cfg-buttons { border: 1px solid #183d77; border-top: none; }
+        .de-cfg-button { padding: 0 4px !important; margin: 0 4px; height: 21px; font: 12px arial !important; }
+        #de-cfg-button-debug { padding: 0 2px; font: 13px/15px arial; }
+        #de-cfg-buttons { display: flex; align-items: center; padding: 3px; }
+        #de-cfg-buttons > label { flex: 1 0 auto; }
+        .de-cfg-chkbox { vertical-align: -1px !important; margin: 2px 1px !important; }
+        #de-cfg-info { display: flex; flex-direction: column; }
+        input[type="text"].de-cfg-inptxt { width: auto; height: auto; min-height: 0; padding: 0 2px !important; margin: 1px 4px 1px 0 !important; font: 13px arial !important; border-width: 1px; }
+        .de-cfg-inptxt, .de-cfg-label, .de-cfg-select { display: inline; width: auto; height: auto !important; font: 13px/15px arial !important; }
+        .de-cfg-label { padding: 0; margin: 0; }
+        .de-cfg-select { padding: 0 2px; margin: 1px 0; font: 13px arial !important; float: none; }
+        .de-cfg-tab { flex: 1 0 auto; display: block !important; margin: 0 !important; float: none !important; width: auto !important; min-width: 0 !important; padding: 4px 0 !important; box-shadow: none !important; border: 1px solid #444 !important; border-radius: 4px 4px 0 0 !important; opacity: 1; font: bold 12px arial; text-align: center; cursor: default; background-image: linear-gradient(to bottom, rgba(132,132,132,.35) 0%, rgba(79,79,79,.35) 50%, rgba(40,40,40,.35) 50%, rgba(80,80,80,.35) 100%) !important; }
+        .de-cfg-tab:hover { background-image: linear-gradient(to top, rgba(132,132,132,.35) 0%, rgba(79,79,79,.35) 50%, rgba(40,40,40,.35) 50%, rgba(80,80,80,.35) 100%) !important; }
+        .de-cfg-tab[selected], .de-cfg-tab[selected]:hover { background-image: none !important; border-bottom: none !important; }
+        .de-cfg-tab::selection { background: transparent; }
+        .de-cfg-unvis { display: none !important; }
+        .de-depend { padding-left: 17px; }
+        #de-info-log, #de-info-stats { width: 100%; padding: 0px 7px; }
+        #de-info-log { overflow-y: auto; border-left: 1px solid grey; }
+        .de-info-name { flex: 1 0 auto; }
+        .de-info-row { display: flex; }
+        #de-info-table { display: flex; flex: 1 0 auto; }
+        .de-spell-btn { padding: 0 4px; }
+        #de-spell-editor { display: flex; align-items: stretch; height: 258px; padding: 2px 0; }
+        #de-spell-panel { display: flex; }
+        #de-spell-txt { padding: 2px !important; margin: 0; width: 100%; min-width: 0; border: none !important; outline: none !important; font: 12px courier new; resize: none !important; }
+        #de-spell-rowmeter { padding: 2px 3px 0 0; overflow: hidden; min-width: 2em; background-color: #616b86; text-align: right; color: #fff; font: 12px courier new; }
+        #de-win-cfg.de-win-fixed { z-index: 10001 !important; }
+
+        /* Settings window theme */
+        #de-cfg-bar, #de-spell-rowmeter { background-color: #777; }
+        .de-cfg-body, #de-cfg-buttons { border-color: #444; }
+
+        /* Favorites window */
+        .de-entry { display: flex !important; align-items: center; float: none !important; padding: 0 !important; margin: 1px 0 !important; min-width: 0 !important; border: none !important; font-size: 13px; overflow: hidden !important; white-space: nowrap; }
+        .de-entry-title { flex: auto; padding-left: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        #de-fav-buttons, #de-hid-buttons { padding-top:6px; }
+        .de-fav-entries { border-top: 1px solid rgba(80,80,80,.3); }
+        .de-fav-entries-hide, .de-fav-inf-icon:not(.de-fav-closed):not(.de-fav-unavail):not(.de-fav-wait), .de-fav-closed > .de-fav-unavail-use, .de-fav-closed > .de-fav-wait-use, .de-fav-unavail > .de-fav-closed-use, .de-fav-unavail > .de-fav-wait-use, .de-fav-wait > .de-fav-closed-use, .de-fav-wait > .de-fav-unavail-use { display: none; }
+        .de-fav-del-btn { margin-left: 2px; cursor: pointer; }
+        .de-fav-del-btn > svg { width: 12px; height: 12px; opacity: 0.65; vertical-align: -2px; }
+        .de-fav-del-btn[de-checked] > svg { color: red; background-color: rgba(255,0,0,.2); border-radius: 7px; opacity: 1; }
+        .de-fav-header { display: flex; cursor: pointer; font-size: 13px; }
+        .de-fav-header-btn { flex: 1 0 auto; margin-right: 2px; font-size: 11px; color: inherit; text-align: right; opacity: 0.65; }
+        .de-fav-header-link { margin-left: 2px; color: inherit; font-weight: bold; text-decoration: none; outline: none; }
+        .de-fav-inf { flex: none; padding: 0 4px 0 10px; font: bold 14px serif; cursor: default; }
+        .de-fav-inf-icon, .de-fav-inf-iwrap  { width: 16px; height: 16px; }
+        .de-fav-inf-icon { margin-bottom: -3px; }
+        .de-fav-inf-new { color: #424f79; }
+        .de-fav-inf-new::after { content: " +"; }
+        .de-fav-inf-old { color: #4f7942; }
+        .de-fav-inf-you { padding: 0 4px; margin-right: 4px; border-radius: 3px; color: #fff; background-color: #424f79; opacity: 0.65; }
+        .de-fav-link { flex: none; margin-left: 2px; text-decoration: none; border: none; }
+        .de-fav-table-unfold > .de-fold-block > .de-fav-entries { display: initial !important; }
+        .de-fav-unavail { color: #cf4436; }
+        .de-fold-block { border: 1px solid rgba(120,120,120,.8); border-radius: 2px; }
+        .de-fold-block:not(:first-child) { border-top: none; }
+
+        /* Post panel */
+        .de-btn-hide > .de-btn-unhide-use, .de-btn-hide-user > .de-btn-unhide-use, .de-btn-unhide > .de-btn-hide-use, .de-btn-unhide-user > .de-btn-hide-use { display: none; }
+        .de-btn-expthr, .de-btn-fav, .de-btn-fav-sel, .de-btn-hide, .de-btn-hide-user, .de-btn-reply, .de-btn-sage, .de-btn-src, .de-btn-stick, .de-btn-stick-on, .de-btn-unhide, .de-btn-unhide-user, .de-win-btn-clear, .de-win-btn-close, .de-win-btn-toggle { margin: 0 2px -3px 0 !important; cursor: pointer; width: 16px; height: 16px; }
+        .de-post-btns { margin-left: 4px; }
+        .de-post-btns-back { fill: inherit; stroke: none; }
+        .de-post-note:not(:empty) { color: inherit; margin: 0 4px; vertical-align: 1px; font: italic bold 12px serif; }
+        .de-thread-note { font-style: italic; }
+
+        /* Sauce buttons */
+        .de-src-google::before { content: ""; display: inline-block; vertical-align: -3px; padding: 16px 16px 0 0; margin-right: 4px; background: url(data:image/gif;base64,R0lGODlhEAAQAMQAAIy0+tHh/gJc8Qlh8UyM9H2r9/3///7//x+OfACSJy+mTZHQos3Te////f///v3HAP+uAPzWjvWTWeUTAPSdl/79/f////39/f///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABgALAAAAAAQABAAAAVuICaKh2Eax6hih+W+bqoaLjXdE+UaY2vhwInrInLhdBYbDEOL3GBQS4X2gEiiUBoEAhMIBl6CpaHlvrxocaO1XUQBgsLYxUgkot7AGONS2N0WCwgCYhZFfXaJCQguDiMvC34JCoCOKlgvK49QKyEAOw==) no-repeat center; background-size: contain; }
+        //.de-src-yandex::before { content: ""; display: inline-block; vertical-align: -3px; padding: 16px 16px 0 0; margin-right: 4px; background: url(data:image/gif;base64,R0lGODlhEAAQAMQAAP////v7+/r5+fb29vHx8eLi4tnZ2dTU1NDQ0MvLy8fHx8TExPzJv/immvlXRvq0re4UEdeGhtbFxcnJyby8vKampm5ubv///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABcALAAAAAAQABAAAAVx4CWOZCkOQKqq5uoCQhnMQuPcc2CQuc3YuQBJQHQ8BA8HkUgYDZ6Qx+ABeVoVIoL2RmhAtODmpUD23iDkdEFkaBsiEAfE3a6IDngJJALH4ycjCIJyCXCCgiQJhXuLigl2IwqSk5QUJRQLmZqaFiaeniEAOw==) no-repeat center; background-size: contain; }
+        .de-src-tineye::before { content: ""; display: inline-block; vertical-align: -3px; padding: 16px 16px 0 0; margin-right: 4px; background: url(data:image/gif;base64,R0lGODlhEAAQAMQAAP///wAAAAwOEhg4UDZ7skGNxkuf3Vycxx4nLerw9DlSX2FnanO21Epxg4LO62KOnpXj+ZGcmb7CvbZ6RfxmAIxBCzsGAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAABcALAAAAAAQABAAAAWlYGIUZGGc6HgkxzSRozIgdHMUx0NR5hH8v8VjeFsoDAyFpcKcQByMnIGgYDAikmxkOLQWqNAGQhAQLBC/BgSXC0QivwgAgFbjHLQ5XDKXBBRrBA80WAABRgkJPwxfDw2HCYYBfHABDSQMDgoIEgs/ZgoPDmuYEFEHmQ6jT5ckBKirEE8HCgEWJQe5ZwJjQBYRBwQMsk8RFgJkP04sVrHGNAEVEAAhADs=) no-repeat center; background-size: contain; }
+        .de-src-saucenao::before { content: ""; display: inline-block; vertical-align: -3px; padding: 16px 16px 0 0; margin-right: 4px; background: url(data:image/gif;base64,R0lGODlhEAAQAIAAAP///wAAACwAAAAAEAAQAAACJ4yPacDtvpQCkU1KT0P75i49mbSAZACd6HN2pmbBI7pe9K1+4q5KBQA7) no-repeat center; background-size: contain; }
+        .de-src-iqdb::before { content: ""; display: inline-block; vertical-align: -3px; padding: 16px 16px 0 0; margin-right: 4px; background: url(data:image/gif;base64,R0lGODlhEAAQAMQAAP//////AP8A//8AAAD//wD/AAAA/wAAANx/hV1ISW9YWvLOd/u0T+WlTNaqcKdtMv/r1mxML7OCVoxtUbmmlfPRuKKGeHpcTvK3nEEvKGpRTCcbGU48OYVua3tkYv///yH5BAEAAB8ALAAAAAAQABAAAAW4INV5ZDcmibM0iVJRnukpmnJJDdNwnDWSk4vCNMnpGJXfwqHReDQJTuTxmEhmqoTFEtRsNhltRTFZTBKUl2IzAmeE2csFA8kcKADLl5NgSDgaGRYAFVYQABkRgAxnGhcdEJEVhxYSDhwNEQkaEhSRGBgIGBUOGBwXERkcExyeFaGjr4E8qgcHDpKgkQpRGhwZYA4Vw6CvPBOpwD0ODlMSoxcJOQ8ZyhccBxkSkRRFDw4SD1/jF5MQIQA7) no-repeat center; background-size: contain; }
+        .de-src-tracemoe::before { content: ""; display: inline-block; vertical-align: -3px; padding: 16px 16px 0 0; margin-right: 4px; background: url(data:image/gif;base64,R0lGODlhEAAPALMAAAAAAP///9fY18HBwTg4ODw1No6PjoFnZhoBAXNGRf/V1KmRkf///wAAAAAAAAAAACH5BAEAAAwALAAAAAAQAA8AAAQ5EMhJq7046w0I9hMhBAIoiSQ4BiS1tgQrg7EceIM8UDm7S4aBwRIcYgoFjmSxQHASCkWCc6gelJkIADs=) no-repeat center; background-size: contain; }
+
+        /* Posts counter */
+        .de-post-counter { margin: 0 4px 0 2px; vertical-align: 1px; font: bold 11px tahoma; color: #4f7942; cursor: default; }
+        .de-post-counter-deleted { color: #727579; }
+        .de-post-counter-you { vertical-align: 1px; font: bold 11px tahoma; color: #505a7a; cursor: default; }
+
+        /* Text markup buttons */
+        .de-markup-back { fill: #f0f0f0; stroke: #808080; }
+        #de-txt-panel { display: block; font-weight: bold; cursor: pointer; }
+        #de-txt-panel > div { display: inline-block; }
+        #de-txt-panel > div > svg { width: 23px; height: 22px; margin: 0 2px; }
+
+        /* Show/hide animation */
+        @keyframes de-open { 0% { transform: translateY(-100%); } 100% { transform: translateY(0); } }
+        @keyframes de-close { 0% { transform: translateY(0); } 100% { transform: translateY(-100%); } }
+        @keyframes de-blink {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+        @keyframes de-post-open-tl { from { transform: translate(-50%,-50%) scale(0); opacity: 0; } }
+        @keyframes de-post-open-bl { from { transform: translate(-50%,50%) scale(0); opacity: 0; } }
+        @keyframes de-post-open-tr { from { transform: translate(50%,-50%) scale(0); opacity: 0; } }
+        @keyframes de-post-open-br { from { transform: translate(50%,50%) scale(0); opacity: 0; } }
+        @keyframes de-post-close-tl { to { transform: translate(-50%,-50%) scale(0); opacity: 0; } }
+        @keyframes de-post-close-bl { to { transform: translate(-50%,50%) scale(0); opacity: 0; } }
+        @keyframes de-post-close-tr { to { transform: translate(50%,-50%) scale(0); opacity: 0; } }
+        @keyframes de-post-close-br { to { transform: translate(50%,50%) scale(0); opacity: 0; } }
+        @keyframes de-post-new { from { transform: translate(0,-50%) scaleY(0); opacity: 0; } }
+        @keyframes de-win-open { from { transform: translate(0,50%) scaleY(0); opacity: 0; } }
+        @keyframes de-win-close { to { transform: translate(0,50%) scaleY(0); opacity: 0; } }
+        .de-pview-anim { animation-duration: .2s; animation-timing-function: ease-in-out; animation-fill-mode: both; }
+        .de-open { animation: de-open .15s ease-out both; }
+        .de-close { animation: de-close .15s ease-in both; }
+        .de-blink { animation: de-blink .7s ease-in-out both; }
+        .de-post-new { animation: de-post-new .2s ease-out both; }
+        .de-win-open { animation: de-win-open .2s ease-out backwards; }
+        .de-win-close { animation: de-win-close .2s ease-in both; }
+
+        /* Full images */
+        .de-img-embed, .de-fullimg { border: none; outline: none; cursor: pointer; image-orientation: from-image; }
+        .de-img-embed { max-width: 200px; max-height: 200px; }
+        .de-fullimg { display: block; }
+        .de-fullimg, .de-fullimg-wrap-link { flex: 0 0 auto; transition: none !important; max-width: none; max-height: none; }
+        .de-fullimg-after { clear: left; }
+        .de-fullimg-center { position: fixed; margin: 0 !important; z-index: 9999; background-color: #ccc; border: 1px solid black !important; -moz-box-sizing: content-box; box-sizing: content-box; }
+        .de-fullimg-info { position: absolute; bottom: -22px; left: 50%; padding: 1px 4px; transform: translateX(-50%); background-color: rgba(64,64,64,.8); white-space: nowrap; line-height: 17px; }
+        .de-fullimg-info > .de-btn-src { color: #fff; }
+        .de-fullimg-link { float: none !important; display: inline-block; font: bold 12px tahoma; color: #fff !important; text-decoration: none; outline: none; }
+        .de-fullimg-link:hover { color: #fff !important; background: rgba(64,64,64,.6); }
+        .de-fullimg-load { position: absolute; z-index: 2; width: 50px; height: 50px; top: 50%; left: 50%; margin: -25px; }
+        .de-fullimg-rotated { transform-origin: top left; width: auto !important; max-width: none !important; }
+        .de-fullimg-video-hack { width: 100%; height: calc(100% - 40px); position: absolute; z-index: 1; cursor: pointer; }
+        .de-fullimg-wrap { position: relative; margin-bottom: 24px; }
+        .de-fullimg-wrap-center, .de-fullimg-wrap-link, .de-fullimg-video > video { width: 100%; height: 100%; max-height: 100%; }
+        .de-fullimg-wrap-center > .de-fullimg-wrap-link > .de-fullimg { height: 100%; }
+        .de-fullimg-wrap-inpost { min-width: 100px; min-height: 100px; float: left;  }
+        .de-fullimg-wrap-nosize > .de-fullimg-wrap-link > .de-fullimg { opacity: 0.3; }
+        .de-img-btn { position: fixed; top: 50%; z-index: 10000; height: 36px; width: 36px; border-radius: 10px 0 0 10px; color: #f0f0f0; cursor: pointer; }
+        .de-img-btn > svg { height: 32px; width: 32px; margin: 2px; }
+        #de-img-btn-auto { right: 0; margin-top: 58px; }
+        .de-img-btn-auto-on { color: #ffe100; }
+        #de-img-btn-next { right: 0; margin-top: -18px; }
+        .de-img-btn-none { display: none; }
+        #de-img-btn-prev { left: 0; margin-top: -18px; transform: scaleX(-1); }
+        #de-img-btn-rotate { right: 0; margin-top: 20px; }
+
+        /* Embedders */
+        .de-video-link.de-ytube::before { content: ""; display: inline-block; vertical-align: -3px; padding: 16px 16px 0 0; margin-right: 4px; background: url(https://youtube.com/favicon.ico) no-repeat center; background-size: contain; }
+        .de-video-link.de-vimeo::before { content: ""; display: inline-block; vertical-align: -3px; padding: 16px 16px 0 0; margin-right: 4px; background: url(https://vimeo.com/favicon.ico) no-repeat center; background-size: contain; }
+        .de-img-arch::before { content: ""; display: inline-block; vertical-align: -3px; padding: 16px 16px 0 0; margin-right: 4px; background: url(data:image/gif;base64,R0lGODlhEAAQALMAAF82SsxdwQMEP6+zzRA872NmZQesBylPHYBBHP///wAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAAkALAAAAAAQABAAQARTMMlJaxqjiL2L51sGjCOCkGiBGWyLtC0KmPIoqUOg78i+ZwOCUOgpDIW3g3KJWC4t0ElBRqtdMr6AKRsA1qYy3JGgMR4xGpAAoRYkVDDWKx6NRgAAOw==) no-repeat center; background-size: contain; }
+        .de-img-audio::before { content: ""; display: inline-block; vertical-align: -3px; padding: 16px 16px 0 0; margin-right: 4px; background: url(data:image/gif;base64,R0lGODlhEAAQAKIAAGya4wFLukKG4oq3802i7Bqy9P///wAAACH5BAEAAAYALAAAAAAQABAAQANBaLrcHsMN4QQYhE01OoCcQIyOYQGooKpV1GwNuAwAa9RkqTPpWqGj0YTSELg0RIYM+TjOkgba0sOaAEbGBW7HTQAAOw==) no-repeat center; background-size: contain; }
+        .de-current::after { content: " ●"; }
+        .de-img-arch, .de-img-audio { margin-left: 4px; color: inherit; text-decoration: none; font-weight: bold; }
+        .de-mp3 { margin: 5px 20px; }
+        .de-video-obj { margin: 5px 20px; white-space: nowrap; }
+        .de-video-obj-inline { display: inline-block; }
+        #de-video-btn-resize { padding: 0 14px 8px 0; margin: 0 8px; border: 2px solid; border-radius: 2px; }
+        #de-video-btn-hide, #de-video-btn-prev { margin-left: auto; }
+        #de-video-buttons { display: flex; margin-bottom: 2px; align-items: center; width: 100%; line-height: 16px; }
+        #de-video-buttons > a:not(:hover) { color: inherit; }
+        .de-video-expanded { width: 854px !important; height: 480px !important; }
+        #de-video-list { padding: 0 0 4px; overflow-y: auto; width: 100%; }
+        .de-video-refpost { margin: 0 3px; color: inherit; text-decoration: none; cursor: pointer; }
+        .de-video-resizer::after { content: "➕"; margin: 0 -15px 0 3px; vertical-align: 6px; color: #000; font-size: 12px; cursor: pointer; }
+        .de-video-player, .de-video-thumb { width: 100%; height: 100%; }
+        a.de-video-player { display: inline-block; position: relative; border-spacing: 0; border: none; }
+        a.de-video-player::after { content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAAWCAQAAACMYb/JAAAArklEQVR4AYXSr05CYRjA4cPGxjRosTijdvNJzmD1CrwAvQWugASNwGg0MoErOIVCPCMx0hmBMaAA4mPX8/2rT/i+9/1lPu0M3MtCN1OAvS+NEFkDmHqoJwcAbHzUkb9n7C5FqLynCAzdpAhLrynCRc9VnEDpKUWYpUmZIlt5nBQeY889amvGPj33HBvdt45WbAELeWyNP/qu/8dwBrDyVp9UBRi5DYXZdTLxEs77F5bCVAHlDJ1UAAAAAElFTkSuQmCC"); position: absolute;top: 50%; left: 50%; padding: 12px 24px; margin: -22px 0 0 -32px; background-color: rgba(255,0,0,.4); border-radius: 8px; line-height: 0; }
+        a.de-video-player:hover::after { background-color: rgba(255,0,0,.7); }
+        .de-video-title[de-time]::after { content: " [" attr(de-time) "]"; color: red; }
+        .de-video-title[de-time].de-current::after { content: " [" attr(de-time) "] ●"; color: red; }
+        .de-vocaroo > embed { display: inline-block; }
+        video { background: black; }
+
+        /* File inputs */
+        .de-file { display: inline-block; vertical-align: top; margin: 1px; height: 90px; width: 90px; text-align: center; background-color: rgba(96,96,96,.15); border: 1px dashed grey; }
+        .de-file > .de-file-img > div { display: flex; justify-content: center; align-items: center; height: 90px; cursor: pointer; }
+        .de-file > .de-file-utils { display: none; height: 18px; margin-top: -20px; padding: 1px 0; background: rgba(64,64,64,.6); position: relative; -moz-box-sizing: initial; box-sizing: initial; }
+        .de-file > .de-file-utils > .de-file-rarmsg { display: block; position: absolute; bottom: 20px; width: 100%; margin: 0; background: rgba(64,64,64,.6); color: #fff; }
+        #de-file-area { margin-top: 1px; width: 275px; min-width: 100%; max-width: 100%; overflow-x: auto; overflow-y: hidden; white-space: nowrap; }
+        .de-file-drag { background: rgba(96,96,96,.8); border: 1px solid grey; opacity: .7; }
+        .de-file:hover:not(.de-file-drag) > .de-file-utils { display: block !important; }
+        img.de-file-img, video.de-file-img { max-width: 90px; max-height: 90px; }
+        .de-file-input { max-width: 300px; }
+        .de-file-input + .de-file-utils { margin-left: 4px; }
+        .de-file-off > .de-file-img > div::after { content: "Бросьте сюда файл(ы) или ссылку"; display: block; width: 80px; margin: 0 auto; font: 11px arial; opacity: .8; white-space: initial; }
+        .de-file-rarmsg { margin: 0 2px; vertical-align: 4px; font: bold 11px tahoma; cursor: default; }
+        .de-file-btn-del, .de-file-btn-rar, .de-file-btn-ren, .de-file-btn-txt { margin: 0 1px; cursor: pointer; }
+        .de-file-btn-del > svg, .de-file-btn-rar > svg, .de-file-btn-ren > svg, .de-file-btn-txt > svg { width: 16px; height: 16px; }
+        .de-file-spoil { margin: 0 3px; vertical-align: 1px; }
+        .de-file-txt-add { font-weight: bold; width: 21px; padding: 0 !important; }
+        .de-file-txt-input { border: 1px solid #9c9c9c; padding: 2px; font: 12px/16px sans-serif; }
+        .de-file-txt-noedit { background: rgba(255,255,255,.5); cursor: pointer; }
+        .de-file-utils { display: inline-block; float: none; vertical-align: -3px; }
+
+        /* Reply form */
+        .de-parea { text-align: center; }
+        .de-parea-btn-close::after { content: "Скрыть форму"; }
+        .de-parea-btn-thr::after { content: "Создать тред"; }
+        .de-parea-btn-reply::after { content: "Ответить"; }
+        #de-pform > form { padding: 0; margin: 0; border: none; }
+        #de-pform input[type="text"], #de-pform input[type="file"] { width: 200px; }
+        #de-resizer-text { display: inline-block !important; float: none !important; padding: 5px; margin: 0 0 -2px -10px; border-bottom: 2px solid #666; border-right: 2px solid #666; cursor: se-resize; }
+        .de-win-inpost { float: none; clear: left; display: inline-block; width: auto; padding: 3px; margin: 2px 0; }
+        .de-win-inpost > .de-resizer { display: none; }
+        .de-win-inpost > .de-win-head { background: none; color: inherit; }
+        #de-win-reply { width: auto !important; min-width: 0; padding: 0 !important; border: none !important; }
+        #de-win-reply.de-win { position: fixed !important; padding: 0 !important; margin: 0 !important; border-radius: 10px 10px 0 0; }
+        #de-win-reply.de-win > .de-win-body { padding: 2px 2px 0 1px; border: 1px solid gray; }
+        #de-win-reply.de-win .de-textarea { min-width: 98% !important; resize: none !important; }
+        #de-win-reply.de-win #de-resizer-text { display: none !important; }
+        #de-sagebtn { display: inline-block; margin: 3px 4px 0 4px !important; cursor: pointer; }
+        .de-textarea { display: inline-block; padding: 3px !important; min-width: 275px !important; min-height: 90px !important; resize: both; transition: none !important; }
+
+        /* Thread navigation */
+        #de-thr-navarrow { display: none; position: absolute; top: 50%; left: 34px; transform: translateY(-50%); width: 7px; height: 7px; }
+        #de-thr-navpanel { color: #F5F5F5; height: 98px; width: 41px; position: fixed; top: 50%; left: 0px; padding: 0; margin: -49px 0 0; background: #777; border: 1px solid #525252; border-left: none; border-radius: 0 5px 5px 0; cursor: pointer; z-index: 1000; }
+        .de-thr-navpanel-hidden { opacity: .7; margin-left: -34px !important; }
+        .de-thr-navpanel-hidden > #de-thr-navarrow { display: initial; }
+        #de-thr-navup { padding: 12px 9px 13px 8px; border-radius: 0 5px 0 0; }
+        #de-thr-navdown { padding: 13px 9px 12px 8px; border-radius: 0 0 5px 0; }
+        #de-thr-navup, #de-thr-navdown { width: 41px; height: 49px; -moz-box-sizing: border-box; box-sizing: border-box; }
+        :not(.de-thr-navpanel-hidden) > #de-thr-navup:hover, :not(.de-thr-navpanel-hidden) > #de-thr-navdown:hover { background: #555; }
+
+        /* Other */
+        .de-abtn { text-decoration: none !important; outline: none; }
+        .de-button { flex: none; padding: 0 4px !important; margin: 1px 2px; height: 24px; font: 13px arial; }
+        .de-editor { display: block; font: 12px courier new; width: 619px; height: 337px; tab-size: 4; -moz-tab-size: 4; -o-tab-size: 4; }
+        .de-hidden { float: left; overflow: hidden !important; margin: 0 !important; padding: 0 !important; border: none !important; width: 0 !important; height: 0 !important; display: inline !important; }
+        .de-input-key { padding: 0 2px !important; margin: 0 !important; font: 13px/15px arial !important; }
+        input[type="text"].de-input-selected { background: rgba(255,255,150,0.4) !important }
+        .de-link-backref { text-decoration: none; }
+        .de-link-parent { outline: 1px dotted !important; }
+        .de-link-pview { font-weight: bold; }
+        .de-list { padding-top: 4px; }
+        .de-list::before { content: "●"; margin-right: 4px; }
+        .de-logo { display: inline-block; margin-right: 10px; fill: inherit; color: #F5F5F5; border-radius: 80px 0 0 0; }
+        .de-logo > svg { width: 144px; height: 144px; }
+        .de-menu { padding: 0 !important; margin: 0 !important; width: auto !important; min-width: 0 !important; z-index: 10002; border: 1px solid grey !important; text-align: left; }
+        .de-menu-item { display: block; padding: 3px 10px; color: inherit; text-decoration: none; font: 13px arial; white-space: nowrap; cursor: pointer; }
+        .de-menu-item:hover { background-color: #222; color: #fff; }
+        .de-omitted { color: grey; }
+        .de-omitted::before { content: "Пропущено ответов: "; }
+        .de-popup { overflow: visible !important; clear: both !important; width: auto !important; min-width: 0pt !important; padding: 8px !important; margin: 1px !important; border: 1px solid grey !important; display: block !important; float: right !important; max-width: initial !important; }
+        .de-popup-btn { display: inline-block; vertical-align: top; color: green; cursor: pointer; line-height: 1.15; }
+        .de-popup-msg { display: inline-block; white-space: pre-wrap; }
+        .de-popup-msg > hr { margin: 0 !important; }
+        .de-post-hiddencontent { display: none !important; }
+        .de-pview { position: absolute; width: auto; min-width: 0; z-index: 9999; border: 1px solid grey !important; margin: 0 !important; display: block !important; }
+        .de-pview-info { padding: 3px 6px !important; }
+        .de-ref-del::after { content: " (Del)"; }
+        .de-ref-op::after { content: " (OP)"; }
+        .de-refcomma:last-child { display: none; }
+        .de-refmap { margin: 10px 4px 4px 4px; font-size: 75%; font-style: italic; }
+        .de-refmap::before { content: "Ответы: "; }
+        .de-replies-hide::after { content: "Скрыть посты"; }
+        .de-replies-show::after { content: "Показать посты"; }
+        .de-thr-buttons { clear: left; margin-top: 5px; }
+
+        .de-thr-collapse-link::after { content: "Свернуть тред"; }
+        .de-thr-hid { display: block; padding: 2px; }
+        .de-thr-updater-link::after { content: "Получить новые посты"; }
+        #de-updater-count::before { content: ": "; }
+        .de-viewed { color: #747488 !important; }
+        .de-wait, .de-fav-wait , .de-fullimg-load { animation: de-wait-anim 1s linear infinite; }
+        .de-wait { margin: 0 2px -3px 0 !important; width: 16px; height: 16px; }
+        #de-wrapper-popup { overflow-x: hidden !important; overflow-y: auto !important; -moz-box-sizing: border-box; box-sizing: border-box; max-height: 100vh; position: fixed; right: 0; top: 0; z-index: 9999; font: 14px arial; cursor: default; }
+        @keyframes de-wait-anim { to { transform: rotate(360deg); } }
+        form > hr { clear: both }</style><style type="text/css" id="de-css-dynamic">
+        .de-video-obj { width: 360px; height: 270px; }
+        .de-new-post { box-shadow: 6px 0 2px -2px rgba(107,134,97,.8), -6px 0 2px -2px rgba(107,134,97,.8) !important; }
+        .de-selected, .de-input-error { box-shadow: 6px 0 2px -2px rgba(220,0,0,.8), -6px 0 2px -2px rgba(220,0,0,.8) !important; }
+        .de-mypost { box-shadow: 6px 0 2px -2px rgba(97,107,134,.8), -6px 0 2px -2px rgba(97,107,134,.8) !important; }
+        .de-mypost-reply:not(.de-pview) { position: relative; }
+        .de-mypost-reply::before { content: ""; position: absolute; top: -0; bottom: 0; left: -1px; border-left: 5px dotted rgba(97,107,134,.8) !important; }
+        .de-ref-del.de-ref-you::after { content: " (Del)(You)"; }
+        .de-ref-op.de-ref-you::after { content: " (OP)(You)"; }
+        .de-ref-you::after { content: " (You)"; }
+        .de-btn-expthr, .de-btn-fav, .de-btn-hide, .de-btn-reply, .de-btn-src, .de-btn-stick, .de-btn-unhide { fill: rgba(0,0,0,0); color: currentColor; }
+        .de-btn-fav-sel, .de-btn-hide-user, .de-btn-sage, .de-btn-stick-on, .de-btn-unhide-user { fill: rgba(0,0,0,0); color: #F00; }
+        .de-fullimg-wrap-inpost > .de-fullimg { max-width: 100%;; }
+        .body { max-width: 2000px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; }
+        .de-thr-hid:not([style="display: none;"]) + div + br,
+        .de-fullimg-info,
+        .de-thr-updater,
+        .de-thr-buttons > svg,
+        #de-pform form > table > tbody > tr > td:not([colspan]):first-child, #de-pform form > table > tbody > tr > th:first-child, body > hr, .postarea, .theader { display: none !important; }
+        .banner, .hide-thread-link, .mentioned,
+        .post-hover { display: none !important; }
+        div.post.reply:not(.de-entry):not(.de-cfg-tab):not(.de-win-body) {
+            float: left !important; clear: left; display: block; }
+        #expand-all-images, #expand-all-images + .unimportant, .fileinfo > span[style*="nowrap;"],
+        .post-btn, small, .watchThread { display: none !important; }
+        body { padding: 0 5px !important; }
+        .boardlist { z-index: 1 !important; }
+        .fileinfo { width: 240px; }
+        .multifile { width: auto !important; }
+        .de-btn-reply { display: none !important; }</style><style type="text/css" id="de-css-user"></style></head>
+<body class="de-runned" style="">
+
+<div class="boardlist">
+
+<span class="sub" data-description="0">
+	[
+	<a href="file:///C:/Users/notgo/Jakuza_0/_l%20-%20%D0%9B%D1%96%D1%82%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D0%B0_1.html#">Fchan</a>
+	]
+</span>
+    <span class="sub" data-description="1">
+	[
+
+		<a href="file:///C:/Users/notgo/Jakuza_0/_l%20-%20%D0%9B%D1%96%D1%82%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D0%B0_1.html#" title="Аніме">a</a> /
+
+		<a href="file:///C:/Users/notgo/Jakuza_0/_l%20-%20%D0%9B%D1%96%D1%82%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D0%B0_1.html#" title="Кіно">c</a> /
+
+		<a href="file:///C:/Users/notgo/Jakuza_0/_l%20-%20%D0%9B%D1%96%D1%82%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D0%B0_1.html#" title="Дозвілля та спорт">d</a> /
+
+		<a href="file:///C:/Users/notgo/Jakuza_0/_l%20-%20%D0%9B%D1%96%D1%82%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D0%B0_1.html#" title="Фп">f</a> /
+
+		<a href="file:///C:/Users/notgo/Jakuza_0/_l%20-%20%D0%9B%D1%96%D1%82%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D0%B0_1.html#" title="Відеоігри">g</a> /
+
+		<a href="file:///C:/Users/notgo/Jakuza_0/_l%20-%20%D0%9B%D1%96%D1%82%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D0%B0_1.html#" title="International">i</a> /
+
+	]
+</span>
+
+</div>
+
+<div class="random-banner">
+
+</div>
+
+<header>
+    <h1 >Фільми</h1>
+    <div class="subtitle">
+
+    </div>
+</header>
+
+
+
+<div id="de-main">
+    <div id="de-panel">
+        <div id="de-panel-logo" title="Прикрепить/Открепить панель">
+            <svg class="de-panel-logo-svg">
+                <use xlink:href="#de-symbol-panel-logo"></use>
+            </svg>
+        </div>
+        <span id="de-panel-buttons" style="display: none;">
+				<a id="de-panel-cfg" class="de-abtn de-panel-button" title="Настройки" href="https://fcahn.ch/l/#">
+			<svg class="de-panel-svg">
+
+				<use xlink:href="#de-symbol-panel-cfg"></use>
+			</svg>
+		</a><a id="de-panel-hid" class="de-abtn de-panel-button" title="Скрытое" href="https://fcahn.ch/l/#">
+			<svg class="de-panel-svg">
+
+				<use xlink:href="#de-symbol-panel-hid"></use>
+			</svg>
+		</a><a id="de-panel-fav" class="de-abtn de-panel-button" title="Избранное" href="https://fcahn.ch/l/#">
+			<svg class="de-panel-svg">
+
+				<use xlink:href="#de-symbol-panel-fav"></use>
+			</svg>
+		</a><a id="de-panel-vid" class="de-abtn de-panel-button" title="Ссылки на видео" href="https://fcahn.ch/l/#">
+			<svg class="de-panel-svg">
+
+				<use xlink:href="#de-symbol-panel-vid"></use>
+			</svg>
+		</a><a id="de-panel-refresh" class="de-abtn de-panel-button" title="Обновить" href="https://fcahn.ch/l/#">
+			<svg class="de-panel-svg">
+
+				<use xlink:href="#de-symbol-panel-refresh"></use>
+			</svg>
+		</a><a id="de-panel-gonext" class="de-abtn de-panel-button" title="На 2 страницу" href="https://fcahn.ch/l/2.html">
+			<svg class="de-panel-svg">
+
+				<use xlink:href="#de-symbol-panel-arrow"></use>
+			</svg>
+		</a><a id="de-panel-goup" class="de-abtn de-panel-button" title="В начало страницы" href="https://fcahn.ch/l/#">
+			<svg class="de-panel-svg">
+
+				<use xlink:href="#de-symbol-panel-arrow"></use>
+			</svg>
+		</a><a id="de-panel-godown" class="de-abtn de-panel-button" title="В конец страницы" href="https://fcahn.ch/l/#">
+			<svg class="de-panel-svg">
+
+				<use xlink:href="#de-symbol-panel-arrow"></use>
+			</svg>
+		</a><a id="de-panel-expimg" class="de-abtn de-panel-button" title="Раскрыть все картинки" href="https://fcahn.ch/l/#">
+			<svg class="de-panel-svg">
+
+				<use xlink:href="#de-symbol-panel-expimg"></use>
+			</svg>
+		</a><a id="de-panel-maskimg" class="de-abtn de-panel-button" title="Режим NSFW" href="https://fcahn.ch/l/#">
+			<svg class="de-panel-svg">
+
+				<use xlink:href="#de-symbol-panel-maskimg"></use>
+			</svg>
+		</a><a id="de-panel-preimg" class="de-abtn de-panel-button" title="Предзагрузить картинки
+([Ctrl+Click] только для новых постов)" href="https://.ch/l/#">
+			<svg class="de-panel-svg">
+
+				<use xlink:href="#de-symbol-panel-preimg"></use>
+			</svg>
+		</a><a id="de-panel-catalog" class="de-abtn de-panel-button" title="Перейти в каталог" href="hth/l/catalog.html">
+			<svg class="de-panel-svg">
+
+				<use xlink:href="#de-symbol-panel-catalog"></use>
+			</svg>
+		</a><a id="de-panel-enable" class="de-abtn de-panel-button" title="Включить/выключить Dollchan" href="">
+			<svg class="de-panel-svg">
+
+				<use xlink:href="#de-symbol-panel-enable"></use>
+			</svg>
+		</a>
+				</span>
+    </div>
+    <div id="de-wrapper-popup"></div><hr style="clear: both;">
+</div><div class="de-parea"><div>[<a href="#" class="de-abtn de-parea-btn-thr"></a>]</div><div id="de-pform" class="de-win-body" style="display: none;"><form name="post" onsubmit="return dopost(this);" enctype="multipart/form-data" action="https://fcahn.ch/l/" method="post" style="display: inline-block; text-align: left;">
+    <input type="hidden" name="csrfmiddlewaretoken" value="WNb9BVBAqFjZoF635VWflagsvyO9mtaGjcQRPRdFpFg79vSSWHI0E1IZMzVf0rZr">
+
+    <input type="hidden" name="board" value="l">
+
+    <div id="de-file-area"><div class="de-file de-file-off"><div class="de-file-img"><div class="de-file-img" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов"></div></div><div class="de-file-utils">
+			<span class="de-file-btn-rar" title="Встроить ogg/rar/zip/7z в картинку" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-rar"></use></svg></span>
+        <input class="de-file-spoil" type="checkbox" title="Спойлер" style="display: none;">
+        <span class="de-file-btn-txt" title="Ввести ссылку на файл вручную">
+				<svg><use xlink:href="#de-symbol-file-txt"></use></svg></span>
+        <span class="de-file-btn-ren" title="Переименовать файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-ren"></use></svg></span>
+        <span class="de-file-btn-del" title="Удалить файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-del"></use></svg></span>
+    </div></div><div class="de-file de-file-off" style="display: none;"><div class="de-file-img"><div class="de-file-img" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов"></div></div><div class="de-file-utils">
+			<span class="de-file-btn-rar" title="Встроить ogg/rar/zip/7z в картинку" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-rar"></use></svg></span>
+        <input class="de-file-spoil" type="checkbox" title="Спойлер" style="display: none;">
+        <span class="de-file-btn-txt" title="Ввести ссылку на файл вручную">
+				<svg><use xlink:href="#de-symbol-file-txt"></use></svg></span>
+        <span class="de-file-btn-ren" title="Переименовать файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-ren"></use></svg></span>
+        <span class="de-file-btn-del" title="Удалить файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-del"></use></svg></span>
+    </div></div><div class="de-file de-file-off" style="display: none;"><div class="de-file-img"><div class="de-file-img" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов"></div></div><div class="de-file-utils">
+			<span class="de-file-btn-rar" title="Встроить ogg/rar/zip/7z в картинку" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-rar"></use></svg></span>
+        <input class="de-file-spoil" type="checkbox" title="Спойлер" style="display: none;">
+        <span class="de-file-btn-txt" title="Ввести ссылку на файл вручную">
+				<svg><use xlink:href="#de-symbol-file-txt"></use></svg></span>
+        <span class="de-file-btn-ren" title="Переименовать файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-ren"></use></svg></span>
+        <span class="de-file-btn-del" title="Удалить файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-del"></use></svg></span>
+    </div></div><div class="de-file de-file-off" style="display: none;"><div class="de-file-img"><div class="de-file-img" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов"></div></div><div class="de-file-utils">
+			<span class="de-file-btn-rar" title="Встроить ogg/rar/zip/7z в картинку" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-rar"></use></svg></span>
+        <input class="de-file-spoil" type="checkbox" title="Спойлер" style="display: none;">
+        <span class="de-file-btn-txt" title="Ввести ссылку на файл вручную">
+				<svg><use xlink:href="#de-symbol-file-txt"></use></svg></span>
+        <span class="de-file-btn-ren" title="Переименовать файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-ren"></use></svg></span>
+        <span class="de-file-btn-del" title="Удалить файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-del"></use></svg></span>
+    </div></div><div class="de-file de-file-off" style="display: none;"><div class="de-file-img"><div class="de-file-img" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов"></div></div><div class="de-file-utils">
+			<span class="de-file-btn-rar" title="Встроить ogg/rar/zip/7z в картинку" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-rar"></use></svg></span>
+        <input class="de-file-spoil" type="checkbox" title="Спойлер" style="display: none;">
+        <span class="de-file-btn-txt" title="Ввести ссылку на файл вручную">
+				<svg><use xlink:href="#de-symbol-file-txt"></use></svg></span>
+        <span class="de-file-btn-ren" title="Переименовать файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-ren"></use></svg></span>
+        <span class="de-file-btn-del" title="Удалить файл" style="display: none;">
+				<svg><use xlink:href="#de-symbol-file-del"></use></svg></span>
+    </div></div></div><table>
+
+    <tbody><tr>
+        <th>
+            Name
+        </th>
+        <td>
+            <input type="text" name="name" maxlength="35" id="id_name" placeholder="Имя">
+        </td>
+    </tr>
+
+
+    <tr style="display: none;">
+        <th>Email</th>
+        <td>
+
+            <input type="text" name="email" maxlength="30" id="id_email" placeholder="Почта">
+
+
+        </td>
+    </tr>
+
+
+    <tr>
+        <th>
+            Subject
+        </th>
+        <td>
+            <input type="text" name="subject" maxlength="100" id="id_subject" placeholder="Тема">
+        </td>
+    </tr>
+
+    <tr>
+        <th>Comment</th>
+        <td>
+            <textarea name="body" cols="40" rows="10" id="id_body" class="de-textarea" title="Ctrl+V - вставить картинку из буфера" style="width: 300px !important; height: 115px !important;"></textarea><span id="de-txt-panel" style="float: none;"><div id="de-btn-bold" de-title="Жирный" de-tag="b"><svg><use xlink:href="#de-symbol-markup-bold"></use></svg></div><div id="de-btn-italic" de-title="Курсив" de-tag="i"><svg><use xlink:href="#de-symbol-markup-italic"></use></svg></div><div id="de-btn-under" de-title="Подчеркнутый" de-tag="u"><svg><use xlink:href="#de-symbol-markup-under"></use></svg></div><div id="de-btn-strike" de-title="Зачеркнутый" de-tag="s"><svg><use xlink:href="#de-symbol-markup-strike"></use></svg></div><div id="de-btn-spoil" de-title="Спойлер" de-tag="spoiler"><svg><use xlink:href="#de-symbol-markup-spoil"></use></svg></div><div id="de-btn-code" de-title="Код" de-tag="code"><svg><use xlink:href="#de-symbol-markup-code"></use></svg></div><div id="de-btn-quote" de-title="Цитировать выделенное" de-tag="q"><svg><use xlink:href="#de-symbol-markup-quote"></use></svg></div></span>
+
+        </td>
+    </tr>
+    <tr class="de-file-txt-area"><td class="postblock"></td><td><span class="de-file-txt-wrap" style="display: none;">
+			<input type="text" name="de-file-txt" class="de-file-txt-input de-file-txt-noedit" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов" placeholder="Бросьте сюда файл(ы) или ссылку">
+			<input type="button" class="de-file-txt-add" value="+" title="Добавить" style="display: none;"></span><span class="de-file-txt-wrap" style="display: none;">
+			<input type="text" name="de-file-txt" class="de-file-txt-input de-file-txt-noedit" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов" placeholder="Бросьте сюда файл(ы) или ссылку">
+			<input type="button" class="de-file-txt-add" value="+" title="Добавить" style="display: none;"></span><span class="de-file-txt-wrap" style="display: none;">
+			<input type="text" name="de-file-txt" class="de-file-txt-input de-file-txt-noedit" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов" placeholder="Бросьте сюда файл(ы) или ссылку">
+			<input type="button" class="de-file-txt-add" value="+" title="Добавить" style="display: none;"></span><span class="de-file-txt-wrap" style="display: none;">
+			<input type="text" name="de-file-txt" class="de-file-txt-input de-file-txt-noedit" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов" placeholder="Бросьте сюда файл(ы) или ссылку">
+			<input type="button" class="de-file-txt-add" value="+" title="Добавить" style="display: none;"></span><span class="de-file-txt-wrap" style="display: none;">
+			<input type="text" name="de-file-txt" class="de-file-txt-input de-file-txt-noedit" title="Можно перетаскивать картинки и ссылки на файлы
+прямо со страницы или других сайтов" placeholder="Бросьте сюда файл(ы) или ссылку">
+			<input type="button" class="de-file-txt-add" value="+" title="Добавить" style="display: none;"></span></td></tr><tr id="upload" style="display: none;">
+        <th>Файл</th>
+        <td><div><input type="file" name="file" class="de-file-input" multiple="true" style="display: none;"></div><div style="display: none;"><input type="file" name="file2" class="de-file-input" multiple="true" style="display: none;"></div><div style="display: none;"><input type="file" name="file3" class="de-file-input" multiple="true" style="display: none;"></div><div style="display: none;"><input type="file" name="file4" class="de-file-input" multiple="true" style="display: none;"></div><div style="display: none;"><input type="file" name="file5" class="de-file-input" multiple="true" style="display: none;"></div></td>
+    </tr>
+
+    <tr style="display: none;">
+        <th>
+            Пароль
+        </th>
+        <td>
+            <input type="text" name="password" maxlength="20" id="id_password">
+            <span class="unimportant">(For file deletion.)</span>
+        </td>
+    </tr>
+
+    <tr>
+        <th>Options</th>
+        <td>
+            <input type="checkbox" name="op_stickers" id="id_op_stickers" checked="">Use op-stickers
+        </td>
+    </tr>
+
+    <tr>
+        <th>
+        </th>
+        <td>
+            <input id="rules" name="rules" type="checkbox" checked="">
+            <label for="rules">By posting you agree with our <a href="#">the rules</a></label>
+            <input accesskey="s" style="margin-left:2px;" type="submit" name="post" value="Створити нитку"><span id="de-sagebtn" title="Без сажи" style="opacity: 0.3;"><svg class="de-btn-sage"><use xlink:href="#de-symbol-post-sage"></use></svg></span>
+
+        </td>
+    </tr>
+
+    </tbody></table>
+    <input class="de-input-hidden" name="json_response" value="1" type="hidden"></form></div><hr></div><div style="display: none; right: 0; top: 0; z-index: 11;" id="de-win-reply" class="post reply de-win-inpost"><div class="de-win-head">
+    <span class="de-win-title"></span>
+    <span class="de-win-buttons">
+				<svg class="de-win-btn-clear"><use xlink:href="#de-symbol-unavail"></use></svg>
+				<svg class="de-win-btn-toggle"><use xlink:href="#de-symbol-win-arrow"></use></svg>
+				<svg class="de-win-btn-close"><use xlink:href="#de-symbol-win-close"></use></svg>
+			</span>
+</div>
+    <div class="de-resizer de-resizer-top"></div>
+    <div class="de-resizer de-resizer-left"></div>
+    <div class="de-resizer de-resizer-right"></div>
+    <div class="de-resizer de-resizer-bottom"></div></div><form name="postcontrols" action="https://fcahn.ch/l/" method="post" de-form="">
+    <input type="hidden" name="board" value="l">
+
+
+
+
+    <th:block th:each="item: ${treds}">
+        <div class="thread" th:id="${'thread_'} + ${item.getTred_id()}"  data-board="l" de-thread="null"  >
+
+            <div class="de-oppost">
+                <div class="post op" th:id="${'op_'}+${item.getTred_id()}"><p class="intro">
+                    <input type="checkbox" class="delete" th:name="${'delete_'}+${item.getTred_id()}" th:id="${'delete_'}+${item.getTred_id()}">
+                    <label th:for="${'delete_'}+${item.getTred_id()}">
+
+
+                        <span class="subject">Тред</span>
+
+
+
+                        <span class="name">Аноніма</span>
+
+
+                        <time datetime="18-05-21 о 03:05:59">18-05-21 о 03:05:59</time>
+
+                    </label>
+                    ⋮⋮⋮
+
+                    &nbsp;
+                    <a class="post_no" th:id=" ${'post_no_'}+${item.getTred_id()}" onclick="highlightReply(5241)" href="https://fcahn.ch/l/res/5241.html">No.</a>
+                    <a class="post_no" onclick="citeReply(5241)" href="https://fcahn.ch/l/res/5241.html">5241</a><span class="de-post-btns" title="Скрыть/Раскрыть тред"><svg class="de-btn-hide-user"><use class="de-btn-hide-use" xlink:href="#de-symbol-post-hide"></use><use class="de-btn-unhide-use" xlink:href="#de-symbol-post-unhide"></use></svg><svg class="de-btn-reply"><use xlink:href="#de-symbol-post-reply"></use></svg><svg class="de-btn-expthr"><use xlink:href="#de-symbol-post-expthr"></use></svg><svg class="de-btn-fav"><use xlink:href="#de-symbol-post-fav"></use></svg></span>
+
+
+
+                    <a th:href="@{/info/{tred_id}(tred_id=${item.getTred_id()})}">Відповідь</a>
+
+
+
+
+
+                </p>
+                    <div class="body" th:text="${item.getInfo()}">
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+    </th:block>
+
+    <input type="hidden" name="csrfmiddlewaretoken" value="WNb9BVBAqFjZoF635VWflagsvyO9mtaGjcQRPRdFpFg79vSSWHI0E1IZMzVf0rZr">
+    <div id="post-moderation-fields">
+
+        <div id="delete-fields">
+            Delete Post [<input title="Delete file only" type="checkbox" name="file" id="delete_file">
+            <label for="delete_file">Файл</label>] <label for="password">Пароль</label>
+            <input id="password" type="password" name="password" size="12" maxlength="18">
+            <input type="submit" name="delete" value="Видалити">
+        </div>
+
+
+        <div id="report-fields">
+            <label for="reason">Reason</label>
+            <input id="reason" type="text" name="reason" size="20" maxlength="30">
+            <input type="submit" name="report" value="Report">
+        </div>
+    </div>
+
+</form><div class="de-parea"><div>[<a href="https://fcahn.ch/l/#" class="de-abtn de-parea-btn-thr"></a>]</div><hr></div>
+
+<hr>
+<div class="boardlist bottom">
+
+<span class="sub" data-description="0">
+	[
+	<a href="#">Fchan</a>
+	]
+</span>
+    <span class="sub" data-description="1">
+	[
+
+		<a href="#" title="Аніме">a</a> /
+
+		<a href="#" title="Балачки">b</a> /
+
+		<a href="#" title="Зауваження">bugs</a> /
+
+		<a href="#" title="Кіно">c</a> /
+
+		<a href="#" title="Дозвілля та спорт">d</a> /
+
+	]
+</span>
+
+</div>
+
+<footer>
+    <p class="unimportant" style="margin-top:20px;text-align:center;">Fchan &amp; Dollchan Templates<br><a href="file:///C:/Users/notgo/Jakuza_0/_l%20-%20%D0%9B%D1%96%D1%82%D0%B5%D1%80%D0%B0%D1%82%D1%83%D1%80%D0%B0_1.html">Fchan</a> Copyright © 2021-2021 Fchan
+        <br></p>
+    <p class="unimportant" style="text-align:center;">Fchan 2021-2021</p>
+</footer>
+
+
+<script>
+    /* gettext-compatible _ function, example of usage:
+*
+* > // Loading pl_PL.json here (containing polish translation strings generated by tools/i18n_compile.php)
+* > alert(_("Hello!"));
+* Witaj!
+*/
+    function _(s) {
+        return (typeof l10n != 'undefined' && typeof l10n[s] != 'undefined') ? l10n[s] : s;
+    }
+
+    /* printf-like formatting function, example of usage:
+     *
+     * > alert(fmt("There are {0} birds on {1} trees", [3,4]));
+     * There are 3 birds on 4 trees
+     * > // Loading pl_PL.json here (containing polish translation strings generated by tools/locale_compile.php)
+     * > alert(fmt(_("{0} users"), [3]));
+     * 3 uzytkownikow
+     */
+    function fmt(s,a) {
+        return s.replace(/\{([0-9]+)\}/g, function(x) { return a[x[1]]; });
+    }
+
+    function until($timestamp) {
+        var $difference = $timestamp - Date.now()/1000|0, $num;
+        switch(true){
+            case ($difference < 60):
+                return "" + $difference + ' ' + _('second(s)');
+            case ($difference < 3600): //60*60 = 3600
+                return "" + ($num = Math.round($difference/(60))) + ' ' + _('minute(s)');
+            case ($difference < 86400): //60*60*24 = 86400
+                return "" + ($num = Math.round($difference/(3600))) + ' ' + _('hour(s)');
+            case ($difference < 604800): //60*60*24*7 = 604800
+                return "" + ($num = Math.round($difference/(86400))) + ' ' + _('day(s)');
+            case ($difference < 31536000): //60*60*24*365 = 31536000
+                return "" + ($num = Math.round($difference/(604800))) + ' ' + _('week(s)');
+            default:
+                return "" + ($num = Math.round($difference/(31536000))) + ' ' + _('year(s)');
+        }
+    }
+
+    function ago($timestamp) {
+        var $difference = (Date.now()/1000|0) - $timestamp, $num;
+        switch(true){
+            case ($difference < 60) :
+                return "" + $difference + ' ' + _('second(s)');
+            case ($difference < 3600): //60*60 = 3600
+                return "" + ($num = Math.round($difference/(60))) + ' ' + _('minute(s)');
+            case ($difference <  86400): //60*60*24 = 86400
+                return "" + ($num = Math.round($difference/(3600))) + ' ' + _('hour(s)');
+            case ($difference < 604800): //60*60*24*7 = 604800
+                return "" + ($num = Math.round($difference/(86400))) + ' ' + _('day(s)');
+            case ($difference < 31536000): //60*60*24*365 = 31536000
+                return "" + ($num = Math.round($difference/(604800))) + ' ' + _('week(s)');
+            default:
+                return "" + ($num = Math.round($difference/(31536000))) + ' ' + _('year(s)');
+        }
+    }
+
+    var datelocale =
+        { days: [_('Sunday'), _('Monday'), _('Tuesday'), _('Wednesday'), _('Thursday'), _('Friday'), _('Saturday')]
+            , shortDays: [_("Sun"), _("Mon"), _("Tue"), _("Wed"), _("Thu"), _("Fri"), _("Sat")]
+            , months: [_('January'), _('February'), _('March'), _('April'), _('May'), _('June'), _('July'), _('August'), _('September'), _('October'), _('November'), _('December')]
+            , shortMonths: [_('Jan'), _('Feb'), _('Mar'), _('Apr'), _('May'), _('Jun'), _('Jul'), _('Aug'), _('Sep'), _('Oct'), _('Nov'), _('Dec')]
+            , AM: _('AM')
+            , PM: _('PM')
+            , am: _('am')
+            , pm: _('pm')
+        };
+
+
+    function alert(a, do_confirm, confirm_ok_action, confirm_cancel_action) {
+        var handler, div, bg, closebtn, okbtn;
+        var close = function() {
+            handler.fadeOut(400, function() { handler.remove(); });
+            return false;
+        };
+
+        handler = $("<div id='alert_handler'><\/div>").hide().appendTo('body');
+
+        bg = $("<div id='alert_background'><\/div>").appendTo(handler);
+
+        div = $("<div id='alert_div'><\/div>").appendTo(handler);
+        closebtn = $("<a id='alert_close' href='javascript:void(0)'><i class='fa fa-times'><\/i><\/div>")
+            .appendTo(div);
+
+        $("<div id='alert_message'><\/div>").html(a).appendTo(div);
+
+        okbtn = $("<button class='button alert_button'>"+_("OK")+"<\/button>").appendTo(div);
+
+        if (do_confirm) {
+            confirm_ok_action = (typeof confirm_ok_action !== "function") ? function(){} : confirm_ok_action;
+            confirm_cancel_action = (typeof confirm_cancel_action !== "function") ? function(){} : confirm_cancel_action;
+            okbtn.click(confirm_ok_action);
+            $("<button class='button alert_button'>"+_("Cancel")+"<\/button>").click(confirm_cancel_action).click(close).appendTo(div);
+            bg.click(confirm_cancel_action);
+            okbtn.click(confirm_cancel_action);
+            closebtn.click(confirm_cancel_action);
+        }
+
+        bg.click(close);
+        okbtn.click(close);
+        closebtn.click(close);
+
+        handler.fadeIn(400);
+    }
+
+    var saved = {};
+
+
+    var selectedstyle = 'fcahn.css';
+    var styles = {
+
+        'fcahnba' : '/static/style.css',
+
+        'fcahn' : '/static/fcahn.css',
+
+        'Futaba' : '/static/futaba.css',
+
+        'fcahnba dark' : '/static/fcahnba_dark.css',
+
+    };
+
+    if (typeof board_name === 'undefined') {
+        var board_name = false;
+    }
+
+    function changeStyle(styleName, link) {
+
+        localStorage.stylesheet = styleName;
+
+
+        if (!document.getElementById('stylesheet')) {
+            var s = document.createElement('link');
+            s.rel = 'stylesheet';
+            s.type = 'text/css';
+            s.id = 'stylesheet';
+            var x = document.getElementsByTagName('head')[0];
+            x.appendChild(s);
+        }
+
+        document.getElementById('stylesheet').href = styles[styleName];
+        selectedstyle = styleName;
+
+        if (document.getElementsByClassName('styles').length != 0) {
+            var styleLinks = document.getElementsByClassName('styles')[0].childNodes;
+            for (var i = 0; i < styleLinks.length; i++) {
+                styleLinks[i].className = '';
+            }
+        }
+
+        if (link) {
+            link.className = 'selected';
+        }
+
+        if (typeof $ != 'undefined')
+            $(window).trigger('stylesheet', styleName);
+    }
+
+
+    if (localStorage.stylesheet) {
+        for (var styleName in styles) {
+            if (styleName == localStorage.stylesheet) {
+                changeStyle(styleName);
+                break;
+            }
+        }
+    }
+
+    function init_stylechooser() {
+        var newElement = document.createElement('div');
+        newElement.className = 'styles';
+
+        for (styleName in styles) {
+            var style = document.createElement('a');
+            style.innerHTML = '[' + styleName + ']';
+            style.onclick = function() {
+                changeStyle(this.innerHTML.substring(1, this.innerHTML.length - 1), this);
+            };
+            if (styleName == selectedstyle) {
+                style.className = 'selected';
+            }
+            style.href = 'javascript:void(0);';
+            newElement.appendChild(style);
+        }
+
+        document.getElementsByTagName('body')[0].insertBefore(newElement, document.getElementsByTagName('body')[0].lastChild.nextSibling);
+    }
+
+    function get_cookie(cookie_name) {
+        var results = document.cookie.match ( '(^|;) ?' + cookie_name + '=([^;]*)(;|$)');
+        if (results)
+            return (unescape(results[2]));
+        else
+            return null;
+    }
+
+    function highlightReply(id) {
+        if (typeof window.event != "undefined" && event.which == 2) {
+            // don't highlight on middle click
+            return true;
+        }
+
+        var divs = document.getElementsByTagName('div');
+        for (var i = 0; i < divs.length; i++)
+        {
+            if (divs[i].className.indexOf('post') != -1)
+                divs[i].className = divs[i].className.replace(/highlighted/, '');
+        }
+        if (id) {
+            var post = document.getElementById('reply_'+id);
+            if (post)
+                post.className += ' highlighted';
+            window.location.hash = id;
+        }
+        return true;
+    }
+
+    function generatePassword() {
+        var pass = '';
+        var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+';
+        for (var i = 0; i < 8; i++) {
+            var rnd = Math.floor(Math.random() * chars.length);
+            pass += chars.substring(rnd, rnd + 1);
+        }
+        return pass;
+    }
+
+    function dopost(form) {
+        if (form.elements['name']) {
+            localStorage.name = form.elements['name'].value.replace(/( |^)## .+$/, '');
+        }
+        if (form.elements['password']) {
+            localStorage.password = form.elements['password'].value;
+        }
+        if (form.elements['email'] && form.elements['email'].value != 'sage') {
+            localStorage.email = form.elements['email'].value;
+        }
+
+        saved[document.location] = form.elements['body'].value;
+        sessionStorage.body = JSON.stringify(saved);
+
+        return form.elements['body'].value != "" || (form.elements['file'] && form.elements['file'].value != "") || (form.elements.file_url && form.elements['file_url'].value != "");
+    }
+
+    function citeReply(id, with_link) {
+        var textarea = document.getElementById('body');
+
+        if (!textarea) return false;
+
+        if (document.selection) {
+            // IE
+            textarea.focus();
+            var sel = document.selection.createRange();
+            sel.text = '>>' + id + '\n';
+        } else if (textarea.selectionStart || textarea.selectionStart == '0') {
+            var start = textarea.selectionStart;
+            var end = textarea.selectionEnd;
+            textarea.value = textarea.value.substring(0, start) + '>>' + id + '\n' + textarea.value.substring(end, textarea.value.length);
+
+            textarea.selectionStart += ('>>' + id).length + 1;
+            textarea.selectionEnd = textarea.selectionStart;
+        } else {
+            // ???
+            textarea.value += '>>' + id + '\n';
+        }
+        if (typeof $ != 'undefined') {
+            var select = document.getSelection().toString();
+            if (select) {
+                var body = $('#reply_' + id + ', #op_' + id).find('div.body');  // TODO: support for OPs
+                var index = body.text().indexOf(select.replace('\n', ''));  // for some reason this only works like this
+                if (index > -1) {
+                    textarea.value += '>' + select + '\n';
+                }
+            }
+
+            $(window).trigger('cite', [id, with_link]);
+            $(textarea).change();
+        }
+        return false;
+    }
+
+    function rememberStuff() {
+        if (document.forms.post) {
+            if (document.forms.post.password) {
+                if (!localStorage.password)
+                    localStorage.password = generatePassword();
+                document.forms.post.password.value = localStorage.password;
+            }
+
+            if (localStorage.name && document.forms.post.elements['name'])
+                document.forms.post.elements['name'].value = localStorage.name;
+            if (localStorage.email && document.forms.post.elements['email'])
+                document.forms.post.elements['email'].value = localStorage.email;
+
+            if (window.location.hash.indexOf('q') == 1)
+                citeReply(window.location.hash.substring(2), true);
+
+            if (sessionStorage.body) {
+                var saved = JSON.parse(sessionStorage.body);
+                if (get_cookie('serv')) {
+                    // Remove successful posts
+                    var successful = JSON.parse(get_cookie('serv'));
+                    for (var url in successful) {
+                        saved[url] = null;
+                    }
+                    sessionStorage.body = JSON.stringify(saved);
+
+                    document.cookie = 'serv={};expires=0;path=/;';
+                }
+                if (saved[document.location]) {
+                    document.forms.post.body.value = saved[document.location];
+                }
+            }
+
+            if (localStorage.body) {
+                document.forms.post.body.value = localStorage.body;
+                localStorage.body = '';
+            }
+        }
+    }
+
+    var script_settings = function(script_name) {
+        this.script_name = script_name;
+        this.get = function(var_name, default_val) {
+            if (typeof tb_settings == 'undefined' ||
+                typeof tb_settings[this.script_name] == 'undefined' ||
+                typeof tb_settings[this.script_name][var_name] == 'undefined')
+                return default_val;
+            return tb_settings[this.script_name][var_name];
+        }
+    };
+
+    function init() {
+        init_stylechooser();
+
+        if (document.forms.postcontrols) {
+            document.forms.postcontrols.password.value = localStorage.password;
+        }
+
+
+        if (window.location.hash.indexOf('q') != 1 && window.location.hash.substring(1))
+            highlightReply(window.location.hash.substring(1));
+    }
+
+    var RecaptchaOptions = {
+        theme : 'clean'
+    };
+
+    onready_callbacks = [];
+    function onready(fnc) {
+        onready_callbacks.push(fnc);
+    }
+
+    function ready() {
+        for (var i = 0; i < onready_callbacks.length; i++) {
+            onready_callbacks[i]();
+        }
+    }
+
+
+    var max_images = 4;
+
+    onready(init);
+
+
+</script>
+
+
+
+
+
+
+<script th:src="@{/js/dollchan.js}" charset="utf-8"></script>
+<script th:src="@{/js/jquery.js}" charset="utf-8"></script>
+<script type="text/javascript">
+    var styles = {
+        'fcahnba' : '/static/style.css',
+        'fcahn' : '/static/fcahn.css',
+        'Futaba' : '/static/futaba.css',
+        'fcahnba dark' : '/static/fcahnba_dark.css',
+
+    }; onready(init);
+</script>
+<script type="text/javascript">
+    ready();
+</script><div class="styles" style="display: none;"><a href="javascript:void(0);" id="style-select-1">[fcahnba]</a><a href="javascript:void(0);" id="style-select-2">[fcahn]</a><a href="javascript:void(0);" id="style-select-3">[Futaba]</a><a href="javascript:void(0);" id="style-select-4">[fcahnba dark]</a></div><div class="styles"><a href="javascript:void(0);">[fcahnba]</a><a href="javascript:void(0);">[fcahn]</a><a href="javascript:void(0);">[Futaba]</a><a href="javascript:void(0);">[fcahnba dark]</a></div><div class="styles" style="display: none;"><a href="javascript:void(0);" id="style-select-1" class="">[fcahnba]</a><a href="javascript:void(0);" id="style-select-2" class="">[fcahn]</a><a class="selected" href="javascript:void(0);" id="style-select-3">[Futaba]</a><a href="javascript:void(0);" id="style-select-4" class="">[fcahnba dark]</a></div><div class="styles"><a href="javascript:void(0);">[fcahnba]</a><a href="javascript:void(0);">[fcahn]</a><a class="selected" href="javascript:void(0);">[Futaba]</a><a href="javascript:void(0);">[fcahnba dark]</a></div>
+
+
+
+
+<div id="de-svg-icons">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <defs>
+            <lineargradient id="de-btn-back-gradient" x1="50%" y1="0%" y2="100%" x2="50%">
+                <stop offset="0%" stop-color="#A0A0A0"></stop>
+                <stop offset="50%" stop-color="#505050"></stop>
+                <stop offset="100%" stop-color="#A0A0A0"></stop>
+            </lineargradient>
+            <lineargradient id="de-file-del-gradient" x1="50%" y1="10%" x2="50%" y2="90%">
+                <stop offset="0" stop-color="#fbd"></stop>
+                <stop offset="50%" stop-color="#f30"></stop>
+            </lineargradient>
+        </defs>
+
+        <!-- POST ICONS -->
+        <symbol viewBox="0 0 16 16" id="de-symbol-post-back">
+            <path class="de-post-btns-back" d="M4 1Q1 1 1 4v8q0 3 3 3h8q3 0 3-3V4q0-3-3-3z"></path>
+        </symbol>
+        <symbol viewBox="0 0 16 16" id="de-symbol-post-hide">
+            <use class="de-post-btns-back" xlink:href="#de-symbol-post-back"></use>
+            <path class="de-svg-stroke" stroke-width="2.5" d="M4.5 11.5l7-7M11.5 11.5l-7-7"></path>
+        </symbol>
+        <symbol viewBox="0 0 16 16" id="de-symbol-post-unhide">
+            <use class="de-post-btns-back" xlink:href="#de-symbol-post-back"></use>
+            <path class="de-svg-stroke" stroke-width="2" d="M8 4v8M4 8h8"></path>
+        </symbol>
+        <symbol viewBox="0 0 16 16" id="de-symbol-post-reply">
+            <use class="de-post-btns-back" xlink:href="#de-symbol-post-back"></use>
+            <path class="de-svg-fill" d="M5 11c0 .8.6 1.2 1.3.7l5-3c.6-.4.6-1 0-1.5l-5-3C5.6 4 5 4.3 5 5v6z"></path>
+        </symbol>
+        <symbol viewBox="0 0 16 16" id="de-symbol-post-expthr">
+            <use class="de-post-btns-back" xlink:href="#de-symbol-post-back"></use>
+            <path class="de-svg-fill" d="M4.5 6L8 3l3.5 3H9.25v4h2.25L8 13l-3.5-3h2.25V6z"></path>
+        </symbol>
+        <symbol viewBox="0 0 16 16" id="de-symbol-post-fav">
+            <use class="de-post-btns-back" xlink:href="#de-symbol-post-back"></use>
+            <path class="de-svg-fill" d="M8 3l1.5 3 3.5.5-2.5 2.2 1 3.8-3.5-2-3.5 2 1-3.8L3 6.5 6.5 6 8 3z"></path>
+        </symbol>
+        <symbol viewBox="0 0 16 16" id="de-symbol-post-stick">
+            <use class="de-post-btns-back" xlink:href="#de-symbol-post-back"></use>
+            <path class="de-svg-fill" d="M5 5h6v6H5z"></path>
+        </symbol>
+        <symbol viewBox="0 0 16 16" id="de-symbol-post-sage">
+            <use class="de-post-btns-back" xlink:href="#de-symbol-post-back"></use>
+            <path class="de-svg-fill" d="M4 9h8l-4 4.5zm2-6h4v1H6zm0 2h4v1H6zm0 2h4v1H6z"></path>
+        </symbol>
+        <symbol viewBox="0 0 16 16" id="de-symbol-post-src">
+            <use class="de-post-btns-back" xlink:href="#de-symbol-post-back"></use>
+            <circle class="de-svg-stroke" stroke-width="2" cx="7" cy="7" r="2.5"></circle>
+            <path class="de-svg-stroke" stroke-width="2" d="M9 9l3 3"></path>
+        </symbol>
+
+        <!-- FILE ICONS -->
+        <symbol viewBox="0 0 16 16" id="de-symbol-file-del">
+            <path fill="url(#de-file-del-gradient)" stroke="#ca2900" d="M4 1.3l4 4 4-4L14.8 4l-4 4 4 4-2.8 2.8-4-4-4 4L1.3 12l4-4-4-4L4 1.3z"></path>
+        </symbol>
+        <symbol viewBox="0 0 16 16" width="16" height="16" id="de-symbol-file-rar">
+            <path stroke="#07ac07" stroke-width="2" d="M3 13h13"></path>
+            <path stroke="#03043f" stroke-width="4" d="M3 10h13"></path>
+            <path stroke="#cc5dc1" stroke-width="2" d="M3 7h13"></path>
+            <path fill="#ccd0db" d="M3 14l-3-3V3l3 3v8z"></path>
+            <path fill="#666" d="M3 5L0 2v1l3 3V5zm0 3L0 5v1l3 3V8zm0 3L0 8v1l3 3v-1zm0 3l-3-3v1l3 3v-1z"></path>
+            <path stroke="#103cef" stroke-width="2" d="M3 10h13"></path>
+            <path stroke="#294f1d" d="M3 14.5h13"></path>
+            <path fill="#994a95" d="M13 2H0l3 3h13l-3-3z"></path>
+            <path stroke="#7C467a" d="M3 5.5h13"></path>
+            <path stroke="#513400" stroke-width="2" d="M9.5 15V5"></path>
+            <path fill="#513400" d="M10.5 5l-3-3h-2l3 3h2z"></path>
+            <path stroke="#ceab00" stroke-width="4" d="M7 10h5"></path>
+            <path fill="none" stroke="#222" d="M8.5 9v1.5h2V9"></path>
+        </symbol>
+        <symbol viewBox="0 0 16 16" id="de-symbol-file-ren">
+            <circle fill="#ffe888" stroke="#333" stroke-width=".75" cx="6" cy="14" r="1.5"></circle>
+            <circle fill="#ffe888" stroke="#333" stroke-width=".75" cx="10" cy="14" r="1.5"></circle>
+            <circle fill="#ffe888" stroke="#333" stroke-width=".75" cx="14" cy="14" r="1.5"></circle>
+            <path fill="#fcb45e" stroke="#3a2200" stroke-width=".75" d="M2 8L9.5.5l1.8 1.8-7.5 7.5L2 8z"></path>
+            <path fill="#ff8a33" stroke="#3a2200" stroke-width=".75" d="M3.8 9.8l7.5-7.5L13 4l-7.5 7.5-1.7-1.7z"></path>
+            <path fill="#ffe888" stroke="#333" stroke-width=".75" d="M2 8l-.5.5L1 9v3.5h3.5l1-1-1.7-1.7L2 8z"></path>
+            <path stroke="#333" d="M1 12.5L2.5 11"></path>
+        </symbol>
+        <symbol viewBox="0 0 16 16" id="de-symbol-file-txt">
+            <circle fill="#2cabe1" cx="8" cy="8" r="7.5"></circle>
+            <line stroke="#fff" stroke-width="2" x1="8" y1="3" x2="8" y2="13"></line>
+            <line stroke="#fff" stroke-width="2" x1="3" y1="8" x2="13" y2="8"></line>
+        </symbol>
+
+        <!-- WINDOW ICONS -->
+        <symbol viewBox="0 0 16 16" id="de-symbol-win-arrow">
+            <path class="de-svg-stroke" stroke-width="3.5" d="M8 13V6"></path>
+            <path class="de-svg-fill" d="M3.5 7h9L8 2.5 3.5 7z"></path>
+        </symbol>
+        <symbol viewBox="0 0 16 16" id="de-symbol-win-close">
+            <path class="de-svg-stroke" stroke-width="2.5" d="M3.5 3.5l9 9m-9 0l9-9"></path>
+        </symbol>
+
+        <!-- THREAD NAVIGATION ICONS -->
+        <symbol viewBox="0 0 7 7" id="de-symbol-thr-nav-arrow">
+            <path class="de-svg-fill" d="M6 3.5L2 0v7z"></path>
+        </symbol>
+        <symbol viewBox="0 0 24 24" id="de-symbol-thr-nav-up">
+            <path class="de-svg-stroke" stroke-width="3" d="M3 22.5l9-9 9 9M3 13.5l9-9 9 9"></path>
+        </symbol>
+        <symbol viewBox="0 0 24 24" id="de-symbol-thr-nav-down">
+            <path class="de-svg-stroke" stroke-width="3" d="M3 11.5l9 9 9-9M3 2.5l9 9 9-9"></path>
+        </symbol>
+
+        <!-- IMAGE BUTTON ICONS -->
+        <symbol viewBox="0 0 32 32" id="de-symbol-img-btn-arrow">
+            <path class="de-svg-stroke" stroke-width="8" d="M0 16h20"></path>
+            <path class="de-svg-stroke" stroke-width="9" d="M13 3l16 16M13 29l16-16"></path>
+        </symbol>
+        <symbol viewBox="0 0 32 32" id="de-symbol-img-btn-auto">
+            <path class="de-svg-fill" d="M13.2 26.6c-3.1 2.4-5.9.5-5.9-3.3V8.7c0-3.8 2.8-5.6 6.1-3.3l12.5 7.1c3.1 1.9 3.1 5.2 0 7.1 0-.1-12.7 7-12.7 7z"></path>
+        </symbol>
+        <symbol viewBox="0 0 32 32" id="de-symbol-img-btn-rotate">
+            <path class="de-svg-stroke" stroke-width="7" d="M16 4c6.6 0 12 5.4 12 12s-5.4 12-12 12S4 22.6 4 16"></path>
+            <path class="de-svg-fill" d="M13.5 19.2L0 27V11.4z"></path>
+        </symbol>
+
+        <!-- MAIN PANEL -->
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-logo">
+            <path class="de-svg-fill" d="M22 5h-10v16h4v-14h6z"></path>
+            <path class="de-svg-stroke" stroke-width="3" d="M22 20.5H12c-2.8 0-5.7 0-5.7-4s2.8-4 5.7-4H21"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-cfg">
+            <circle class="de-svg-stroke" stroke-width="3" cx="12.5" cy="12.5" r="6"></circle>
+            <path class="de-svg-stroke" stroke-width="3" d="M12.5 6.5v-3M18.5 12.5h3M12.5 18.5v3M6.5 12.5h-3M16.7 8.3L19 6M16.7 16.7L19 19M8.3 16.7L6 19M8.3 8.3L6 6"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-hid">
+            <path class="de-svg-stroke" stroke-width="4" d="M6 19L19 6M6 6l13 13"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-fav">
+            <path class="de-svg-fill" d="M12.5 3.5l2.5 6 6.5.5-5 4.2 2 6.8-6-4-6 4 2-6.8-5-4.2 6.5-.5 2.5-6z"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-vid">
+            <path class="de-svg-fill" d="M12.5 4a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17zm-1 13c-1.3 1-2.5.2-2.5-1.4V9.4C9 7.8 10.2 7 11.6 8l5.3 3c1.3.8 1.3 2.2 0 3l-5.4 3z"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-refresh">
+            <path class="de-svg-fill" d="M14 4v4.3a4.5 4.5 0 1 1-3 0V4a8.5 8.5 0 1 0 3 0z"></path>
+            <path class="de-svg-fill" d="M13 11V4h7"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-arrow">
+            <path class="de-svg-stroke" stroke-width="5" d="M4 12.5h12"></path>
+            <path class="de-svg-fill" d="M14 19V6l7 6.5"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-expimg">
+            <path class="de-svg-stroke" stroke-width="2" d="M20 18c0 1-1 2-2 2H7c-1 0-2-1-2-2V7c0-1 1-2 2-2h11c1 0 2 1 2 2v11z"></path>
+            <path class="de-svg-stroke" stroke-width="3" d="M8 12.5h9"></path>
+            <path class="de-svg-fill" d="M10 8v9l-5-4.5M15 17V8l5 4.5"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-maskimg">
+            <path class="de-svg-stroke" stroke-width="2" d="M20 18c0 1-1 2-2 2H7c-1 0-2-1-2-2V7c0-1 1-2 2-2h11c1 0 2 1 2 2v11z"></path>
+            <path class="de-svg-stroke" d="M5 20L20 5M5 15.5L15.5 5M5 11l6-6M20 9.5L9.5 20M20 14l-6 6"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-preimg">
+            <path class="de-svg-stroke" stroke-width="2" d="M20 18c0 1-1 2-2 2H7c-1 0-2-1-2-2V7c0-1 1-2 2-2h11c1 0 2 1 2 2v11z"></path>
+            <path class="de-svg-stroke" stroke-width="3" d="M12.5 17V9"></path>
+            <path class="de-svg-fill" d="M8 15h9l-4.5 5"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-savethr">
+            <path class="de-svg-fill" d="M18 4h-1v6H8V4H6C5 4 4 5 4 6v13c0 1 1 2 2 2h13c1 0 2-1 2-2V7l-3-3zM6 20v-8h13v8H6z"></path>
+            <path class="de-svg-stroke" stroke-width="3" d="M13.5 9V4"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-upd">
+            <circle cx="12.5" cy="10.8" r="4"></circle>
+            <path class="de-svg-stroke" stroke-width="2" stroke-linejoin="round" d="M4.5 12q8-10,16 0q-8 10,-16 0z"></path>
+            <path class="de-svg-stroke" d="M11 7L9.8 5M14 7l1.2-2M11 17l-1.2 2m4.2-2l1.2 2M7 8.5L5.3 6.8M7 15.5l-1.7 1.7M18 8.5l1.7-1.7M18 15.5l1.7 1.7"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-audio-off">
+            <path class="de-svg-fill" d="M13 21V4L8 9H4v7h4l5 5z"></path>
+            <path class="de-svg-stroke" stroke-width="2" d="M15 9.5l6 6m0-6l-6 6"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-audio-on">
+            <path class="de-svg-fill" d="M13 21V4L8 9H4v7h4z"></path>
+            <path class="de-svg-stroke" stroke-width="2" d="M15.5 7.5c1.7 3.3 1.7 6.7 0 10m3-12.5c3 5 3 10 0 15"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-catalog">
+            <path class="de-svg-fill" d="M5 5h3v3H5zm12 0h3v3h-3zm-4 0h3v3h-3zM9 5h3v3H9zM5 9h3v3H5zm12 0h3v3h-3zm-4 0h3v3h-3zM9 9h3v3H9zm-4 4h3v3H5zm12 0h3v3h-3zm-4 0h3v3h-3zm-4 0h3v3H9zm-4 4h3v3H5zm12 0h3v3h-3zm-4 0h3v3h-3zm-4 0h3v3H9z"></path>
+        </symbol>
+        <symbol viewBox="0 0 25 25" id="de-symbol-panel-enable">
+            <path class="de-svg-stroke" stroke-width="3" d="M12.5 4v8"></path>
+            <path class="de-svg-fill" d="M16 4.8v4a5 5 0 0 1-3.5 8.7A5 5 0 0 1 9 9V4.7a8.5 8.5 0 1 0 7 0z"></path>
+        </symbol>
+
+        <!-- MARKUP BUTTONS -->
+        <symbol viewBox="0 0 23 22" id="de-symbol-markup-back">
+            <path class="de-markup-back" stroke-width="2" d="M6 1q-5 0,-5 5v10q0 5,5 5h11q5 0,5 -5v-10q0 -5,-5-5z"></path>
+        </symbol>
+        <symbol viewBox="0 0 23 22" id="de-symbol-markup-bold">
+            <use xlink:href="#de-symbol-markup-back"></use>
+            <text x="5.5" y="17" style="font-family: sans-serif; font-size: 17px; font-weight: 800;">B</text>
+        </symbol>
+        <symbol viewBox="0 0 23 22" id="de-symbol-markup-italic">
+            <use xlink:href="#de-symbol-markup-back"></use>
+            <text x="8" y="17" style="font-family: sans-serif; font-size: 17px; font-weight: 600; font-style: italic;">i</text>
+        </symbol>
+        <symbol viewBox="0 0 23 22" id="de-symbol-markup-under">
+            <use xlink:href="#de-symbol-markup-back"></use>
+            <text x="6" y="15" width="20" style="font-family: sans-serif; font-size: 17px; font-weight: 600;">u</text>
+            <path stroke="#444" stroke-width="1.5" d="M6 17H17.5"></path>
+        </symbol>
+        <symbol viewBox="0 0 23 22" id="de-symbol-markup-strike">
+            <use xlink:href="#de-symbol-markup-back"></use>
+            <text x="4" y="17" style="font-family: sans-serif; font-size: 22px; font-weight: 600; font-style: italic;">s</text>
+            <path stroke="#444" d="M4 11H19"></path>
+        </symbol>
+        <symbol viewBox="0 0 23 22" id="de-symbol-markup-spoil">
+            <use xlink:href="#de-symbol-markup-back"></use>
+            <path stroke="#666" stroke-width="10" d="M4 11H19"></path>
+        </symbol>
+        <symbol viewBox="0 0 23 22" id="de-symbol-markup-code">
+            <use xlink:href="#de-symbol-markup-back"></use>
+            <text x="5" y="17" style="font-family: &#39;Lucida Console&#39;, monospace; font-size: 18px; font-weight: 600;">C</text>
+        </symbol>
+        <symbol viewBox="0 0 23 22" id="de-symbol-markup-sup">
+            <use xlink:href="#de-symbol-markup-back"></use>
+            <text x="4" y="15" style="font-family: sans-serif; font-size: 16px; font-weight: 600;">x</text>
+            <text x="14" y="10" style="font-family: sans-serif; font-size: 8px; font-weight: 600;">2</text>
+        </symbol>
+        <symbol viewBox="0 0 23 22" id="de-symbol-markup-sub">
+            <use xlink:href="#de-symbol-markup-back"></use>
+            <text x="4" y="15" style="font-family: sans-serif; font-size: 16px; font-weight: 600;">x</text>
+            <text x="14" y="17" style="font-family: sans-serif; font-size: 8px; font-weight: 600;">2</text>
+        </symbol>
+        <symbol viewBox="0 0 23 22" id="de-symbol-markup-quote">
+            <use xlink:href="#de-symbol-markup-back"></use>
+            <text x="6" y="18" style="font-family: sans-serif; font-size: 20px; font-weight: 600;">&gt;</text>
+        </symbol>
+
+        <!-- OTHER -->
+        <symbol viewBox="0 0 16 16" id="de-symbol-wait">
+            <circle fill="#929087" cx="8" cy="2" r="2"></circle>
+            <circle fill="#C5C2BA" cx="8" cy="14" r="2"></circle>
+            <circle fill="#ACAAA0" cx="2" cy="8" r="2"></circle>
+            <circle fill="#79766C" cx="14" cy="8" r="2"></circle>
+            <circle fill="#D2CFC6" cx="12.25" cy="12.25" r="2"></circle>
+            <circle fill="#9F9C93" cx="3.75" cy="3.75" r="2"></circle>
+            <circle fill="#B9B6AE" cx="3.75" cy="12.25" r="2"></circle>
+            <circle fill="#868379" cx="12.25" cy="3.75" r="2"></circle>
+        </symbol>
+        <symbol viewBox="0 0 16 16" id="de-symbol-closed">
+            <image display="inline" width="16" height="16" xlink:href="data:image/gif;base64,R0lGODlhEAAQAKIAAP3rqPPOd+y6V+WmN+Dg4M7OzmZmZv///yH5BAEAAAcALAAAAAAQABAAAANCeLrWvZARUqqJkjiLj9FMcWHf6IldGZqM4zqRAcw0zXpAoO/6LfeNnS8XcAhjAIHSoFwim0wockCtUodWq+/1UiQAADs="></image>
+        </symbol>
+        <symbol viewBox="0 0 16 16" id="de-symbol-unavail">
+            <circle class="de-svg-stroke" fill="none" stroke-width="2" cx="8" cy="8" r="5"></circle>
+            <path class="de-svg-stroke" stroke-width="2" d="M4 4l8 8"></path>
+        </symbol>
+    </svg>
+</div>
+<div id="de-thr-navpanel" class="de-thr-navpanel-hidden" style="display: none;">
+    <svg id="de-thr-navarrow"><use xlink:href="#de-symbol-thr-nav-arrow"></use></svg>
+    <div id="de-thr-navup">
+        <svg viewBox="0 0 24 24"><use xlink:href="#de-symbol-thr-nav-up"></use></svg>
+    </div>
+    <div id="de-thr-navdown">
+        <svg viewBox="0 0 24 24"><use xlink:href="#de-symbol-thr-nav-down"></use></svg>
+    </div>
+</div>
+</body>
+</html>

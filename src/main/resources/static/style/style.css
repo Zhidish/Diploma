@@ -1,0 +1,74 @@
+div.tred_info{
+    border: 2px solid;
+}
+
+
+ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #db6400;
+}
+
+
+li {
+margin-left: 3px;
+    float: top;
+}
+
+
+
+
+
+#td_answers{
+    display: flex;
+}
+
+
+
+table.post.reply:not(.de-entry):not(.de-cfg-tab):not(.de-win-body) {
+    float: left !important;
+    clear: left;
+    display: block;
+}
+
+table.post.reply {
+    background: #E5DC9B url(../img/fchan_post.png);
+    border: 2px solid #CCC17F;
+    margin: 0.2em 4px;
+    padding: 0.2em 0.3em 0.5em 0.6em;
+    max-width: 94%!important;
+    clear: left;
+    float: left;
+    display: block;
+}
+table.post {
+    padding-left: 20px;
+}
+table.fileinfo, .post {
+    padding: 0 0 4px;
+}
+
+table {
+    display: block;
+}
+body{
+    background: #AAC3EC url(../img/fchan_body.png);
+    color: #000;
+    font: 15px Roboto,Trebuchet MS,Trebuchet,Arial,Verdana,sans-serif;
+    margin: 0;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+body {
+    color: black;
+    font-family: arial,helvetica,sans-serif;
+    font-size: 10pt;
+    line-height: 1.4em;
+    margin: 0 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+
